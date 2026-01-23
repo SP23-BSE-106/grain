@@ -2,13 +2,13 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-off-white">
       {/* Hero */}
-      <section className="bg-cover bg-center h-96 flex items-center justify-center" style={{ backgroundImage: "url('/hero-grains.jpg')" }}>
-        <div className="text-center text-white">
+      <section className="bg-beige h-96 flex items-center justify-center">
+        <div className="text-center text-olive-green">
           <h1 className="text-4xl font-bold mb-4">Pure Grains, Honest Nutrition</h1>
           <p className="text-lg mb-6">Discover the finest grains and pulses for a healthy lifestyle.</p>
           <div className="space-x-4">
             <button className="bg-olive-green text-white px-6 py-3 rounded hover:bg-wheat-brown transition">Shop Now</button>
-            <button className="bg-beige text-olive-green px-6 py-3 rounded hover:bg-wheat-brown transition">Explore Categories</button>
+            <button className="bg-wheat-brown text-olive-green px-6 py-3 rounded hover:bg-beige transition">Explore Categories</button>
           </div>
         </div>
       </section>
