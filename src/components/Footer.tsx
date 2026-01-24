@@ -53,7 +53,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-olive-green/30 mt-8 pt-8 text-center">
-          <p className="text-gray-400">&copy; 2024 GrainyMart. All rights reserved. Made with love for healthy living.</p>
+          <p className="text-gray-400">&copy; 2026 GrainyMart. All rights reserved. Made with love for healthy living.</p>
         </div>
       </div>
     </footer>
