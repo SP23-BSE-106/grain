@@ -1,2 +1,0 @@
-- [x] Fix Zod enum in src/app/signup/page.tsx by updating the role schema to handle required validation properly
-- [x] Verify build passes after fix
