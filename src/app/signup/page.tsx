@@ -11,13 +11,10 @@ const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
-  role: z.enum(['user', 'admin', '']),
+  role: z.enum(['user', 'admin']),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
-}).refine((data) => data.role !== '', {
-  message: 'Role is required',
-  path: ['role'],
 });
 
 type FormData = {
@@ -25,7 +22,7 @@ type FormData = {
   email: string;
   password: string;
   confirmPassword: string;
-  role: 'user' | 'admin' | '';
+  role: 'user' | 'admin';
 };
 
 const Signup = () => {
