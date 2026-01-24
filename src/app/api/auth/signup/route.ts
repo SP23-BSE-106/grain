@@ -7,8 +7,8 @@ import User from '@/models/User';
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
-    const { name, email, password } = await request.json();
-    if (!name || !email || !password) {
+    const { name, email, password, role } = await request.json();
+    if (!name || !email || !password || !role) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
     const existingUser = await User.findOne({ email });
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashedPassword });
+    const user = new User({ name, email, password: hashedPassword, role });
     await user.save();
     if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
       console.error('JWT secrets not configured');

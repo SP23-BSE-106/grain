@@ -15,9 +15,17 @@ interface Product {
 interface Order {
   _id: string;
   user: { name: string; email: string };
-  items: { product: Product; quantity: number; price: number }[];
+  items: { product: { name: string; price: number }; quantity: number; price: number }[];
   total: number;
-  status: string;
+  status: 'pending' | 'paid' | 'shipped' | 'delivered';
+  createdAt: string;
+}
+
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
   createdAt: string;
 }
 
@@ -27,6 +35,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,29 +48,24 @@ const AdminDashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [productsRes, ordersRes] = await Promise.all([
+      const [productsRes, ordersRes, usersRes] = await Promise.all([
         fetch('/api/products'),
-        fetch('/api/orders')
+        fetch('/api/orders'),
+        fetch('/api/users')
       ]);
       const productsData = await productsRes.json();
       const ordersData = await ordersRes.json();
+      const usersData = await usersRes.json();
       setProducts(productsData);
       setOrders(ordersData);
+      setUsers(usersData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (!user || user.role !== 'admin') {
-      router.push('/');
-      return;
-    }
-    fetchData();
-  }, [user, router]);
-
-  const updateOrderStatus = async (orderId: string, status: string) => {
+  const updateOrderStatus = async (orderId: string, status: Order['status']) => {
     try {
       const res = await fetch(`/api/orders/${orderId}`, {
         method: 'PATCH',
@@ -105,6 +109,16 @@ const AdminDashboard = () => {
             }`}
           >
             Manage Orders
+          </button>
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              activeTab === 'users'
+                ? 'bg-olive-green text-white'
+                : 'bg-white text-olive-green border border-olive-green'
+            }`}
+          >
+            Manage Users
           </button>
         </div>
 
@@ -184,6 +198,34 @@ const AdminDashboard = () => {
                   )}
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'users' && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-bold mb-4">Users</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2">Name</th>
+                    <th className="text-left py-2">Email</th>
+                    <th className="text-left py-2">Role</th>
+                    <th className="text-left py-2">Joined</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map(user => (
+                    <tr key={user._id} className="border-b">
+                      <td className="py-2">{user.name}</td>
+                      <td className="py-2">{user.email}</td>
+                      <td className="py-2">{user.role}</td>
+                      <td className="py-2">{new Date(user.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

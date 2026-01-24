@@ -1,21 +1,22 @@
-# CSS Improvement Plan
+# TODO List for GrainyMart Website Enhancements
 
-## Completed
-- [x] Analyze current styling and identify issues
-- [x] Create comprehensive improvement plan
-- [x] Define professional color palette in globals.css
-- [x] Enhance typography and base styles
-- [x] Improve Header component styling
-- [x] Improve Footer component styling
-- [x] Modernize ProductCard design
-- [x] Enhance home page layout
-- [x] Improve shop page styling
-- [x] Refine login page form styling
-- [x] Refine signup page form styling
-- [x] Improve product detail page layout
-- [x] Test responsive design across all pages
-- [x] Verify color accessibility and contrast
-- [x] Add admin functionality (dashboard, order management)
-- [x] Implement quantity reduction on order placement
-- [x] Ensure add to cart functionality works
-- [x] Create cart page and checkout process
+## CSS Improvements
+- [x] Update globals.css with enhanced color variables, animations, and utility classes
+- [x] Improve responsive design across components (Header, Footer, ProductCard, etc.)
+- [x] Add smooth hover effects and transitions to buttons and cards
+- [x] Implement accessibility features (better focus states, contrast)
+- [x] Add subtle shadows, gradients, and modern UI elements for polish
+
+## New Features Implementation
+- [ ] Add product detail page (/product/[id]) with full product info, images, reviews, and add-to-cart
+- [ ] Implement search and filter functionality on the shop page (by category, price, rating)
+- [ ] Create a user profile page for managing account details and order history
+- [ ] Add a wishlist feature for users to save products
+- [ ] Integrate a payment gateway (e.g., Stripe) for secure checkout
+- [ ] Enhance the admin panel for managing products, orders, and users
+- [ ] Add email notifications for order confirmations and updates
+- [ ] Implement product reviews and ratings system
+
+## Testing and Followup
+- [ ] Test responsiveness and accessibility after changes
+- [ ] Verify all new features work correctly

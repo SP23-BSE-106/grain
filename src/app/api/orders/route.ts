@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/mongoose';
 import Order from '@/models/Order';
 import Product from '@/models/Product';
@@ -8,7 +9,13 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    const token = request.cookies.get('token')?.value;
+    let token = request.cookies.get('accessToken')?.value;
+    if (!token) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -28,9 +35,15 @@ export async function POST(request: NextRequest) {
     const orderItems = [];
 
     for (const item of items) {
-      const product = await Product.findById(item.product._id);
+      let product;
+      try {
+        product = await Product.findOne({ _id: new mongoose.Types.ObjectId(item.product._id) });
+      } catch (error) {
+        // If _id is not a valid ObjectId, try finding by name
+        product = await Product.findOne({ name: item.product.name });
+      }
       if (!product) {
-        return NextResponse.json({ error: `Product ${item.product._id} not found` }, { status: 404 });
+        return NextResponse.json({ error: `Product ${item.product.name} not found` }, { status: 404 });
       }
       if (product.stock < item.quantity) {
         return NextResponse.json({ error: `Insufficient stock for ${product.name}` }, { status: 400 });
@@ -52,8 +65,8 @@ export async function POST(request: NextRequest) {
     await order.save();
 
     // Update product stock
-    for (const item of items) {
-      await Product.findByIdAndUpdate(item.product._id, {
+    for (const item of orderItems) {
+      await Product.findByIdAndUpdate(item.product, {
         $inc: { stock: -item.quantity }
       });
     }
@@ -69,7 +82,13 @@ export async function GET(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    const token = request.cookies.get('token')?.value;
+    let token = request.cookies.get('accessToken')?.value;
+    if (!token) {
+      const authHeader = request.headers.get('authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

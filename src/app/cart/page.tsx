@@ -24,6 +24,8 @@ const Cart = () => {
 
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
+  const { token } = useAuthStore();
+
   const handleCheckout = async () => {
     if (!user) {
       router.push('/login');
@@ -32,7 +34,6 @@ const Cart = () => {
 
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: {

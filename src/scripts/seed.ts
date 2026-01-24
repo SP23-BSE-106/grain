@@ -12,6 +12,7 @@ async function seed() {
       description: 'High-quality organic wheat grains.',
       image: '/placeholder.jpg',
       rating: 4.5,
+      stock: 100,
       reviews: []
     },
     {
@@ -21,6 +22,7 @@ async function seed() {
       description: 'Nutritious brown rice.',
       image: '/placeholder.jpg',
       rating: 4.0,
+      stock: 100,
       reviews: []
     },
     {
@@ -30,6 +32,7 @@ async function seed() {
       description: 'Protein-rich lentils.',
       image: '/placeholder.jpg',
       rating: 4.2,
+      stock: 100,
       reviews: []
     },
     {
@@ -39,6 +42,7 @@ async function seed() {
       description: 'Superfood quinoa.',
       image: '/placeholder.jpg',
       rating: 4.8,
+      stock: 100,
       reviews: []
     },
     {
@@ -48,6 +52,7 @@ async function seed() {
       description: 'Versatile chickpeas.',
       image: '/placeholder.jpg',
       rating: 4.3,
+      stock: 100,
       reviews: []
     }
   ];

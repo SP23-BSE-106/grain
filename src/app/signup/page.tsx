@@ -11,6 +11,7 @@ const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
+  role: z.enum(['user', 'admin'], { required_error: 'Role is required' }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -90,6 +91,18 @@ const Signup = () => {
               placeholder="Confirm your password"
             />
             {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+            <select
+              {...register('role')}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+            >
+              <option value="">Select a role</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+            {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
           </div>
           <button
             type="submit"
