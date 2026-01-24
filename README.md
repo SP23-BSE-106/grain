@@ -242,9 +242,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 - Open an issue on GitHub
-- Contact us at support@grainymart.com
+- Contact us at munazzajaved277@gmail.com
 - Check our documentation for common solutions
 
 ---
 
-**Made with ❤️ for healthy living and sustainable agriculture**
+**Made with love for healthy living and sustainable agriculture**

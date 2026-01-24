@@ -11,7 +11,7 @@ const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
-  role: z.enum(['user', 'admin'], { required_error: 'Role is required' }),
+  role: z.enum(['user', 'admin', '']).refine(val => val !== '', { message: 'Role is required' }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
