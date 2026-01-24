@@ -45,35 +45,63 @@ const Signup = () => {
     setLoading(false);
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-beige">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <label className="block text-gray-700">Name</label>
-            <input {...register('name')} className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-olive-green" />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-beige to-wheat-brown/20 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border border-gray-100">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-olive-green mb-2">Join GrainyMart</h2>
+          <p className="text-gray-600">Create your account to get started</p>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+            <input
+              {...register('name')}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              placeholder="Enter your full name"
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
-            <input {...register('email')} type="email" className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-olive-green" />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <input
+              {...register('email')}
+              type="email"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              placeholder="Enter your email"
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Password</label>
-            <input {...register('password')} type="password" className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-olive-green" />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <input
+              {...register('password')}
+              type="password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              placeholder="Create a password"
+            />
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Confirm Password</label>
-            <input {...register('confirmPassword')} type="password" className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-olive-green" />
-            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+            <input
+              {...register('confirmPassword')}
+              type="password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              placeholder="Confirm your password"
+            />
+            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
           </div>
-          <button type="submit" disabled={loading} className="w-full bg-olive-green text-white py-2 rounded hover:bg-wheat-brown transition">
-            {loading ? 'Creating...' : 'Create Account'}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-olive-green text-white py-3 rounded-lg hover:bg-wheat-brown transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
-        <p className="text-center mt-4">Already have an account? <a href="/login" className="text-olive-green">Sign In</a></p>
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">Already have an account? <a href="/login" className="text-olive-green hover:text-wheat-brown font-medium transition-colors duration-200">Sign in</a></p>
+        </div>
       </div>
     </div>
   );

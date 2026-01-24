@@ -18,12 +18,17 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
-    const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET!, { expiresIn: '15m' });
-    const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET!, { expiresIn: '7d' });
+    if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
+      console.error('JWT secrets not configured');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
+    const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
+    const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const response = NextResponse.json({ message: 'User created successfully' });
     response.cookies.set('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
     return response;
   } catch (error) {
+    console.error('Signup error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

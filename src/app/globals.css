@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  color-scheme: light;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -7,12 +11,10 @@
 
 @theme inline {
   --color-background: var(--background);
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-olive-green: #6B8E23;
+  --color-beige: #F5F5DC;
+  --color-wheat-brown: #D2B48C;
+  --color-off-white: #FAF9F6;
 }
 
 body {

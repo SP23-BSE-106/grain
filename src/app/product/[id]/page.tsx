@@ -66,7 +66,7 @@ const ProductDetail = () => {
               </div>
             </div>
             <p>{review.comment}</p>
-            <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
+            <p className="text-sm text-gray-500">{new Date(review.createdAt).toDateString()}</p>
           </div>
         ))}
       </div>

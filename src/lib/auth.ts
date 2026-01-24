@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
 
 export function hashPassword(password: string): string {
   return bcrypt.hashSync(password, 10);
@@ -12,12 +12,12 @@ export function comparePassword(password: string, hash: string): boolean {
 }
 
 export function generateToken(payload: object): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: '15m' });
 }
 
 export function verifyToken(token: string): any {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, JWT_ACCESS_SECRET);
   } catch (error) {
     return null;
   }

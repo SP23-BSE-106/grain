@@ -17,6 +17,9 @@ const Header = () => {
           {user ? (
             <>
               <span className="text-olive-green">Hello, {user.name}</span>
+              {user.role === 'admin' && (
+                <Link href="/admin" className="text-olive-green hover:text-wheat-brown">Admin</Link>
+              )}
               <button onClick={logout} className="text-olive-green hover:text-wheat-brown">Logout</button>
             </>
           ) : (

@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import Product from '@/models/Product';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectToDatabase();
-    const product = await Product.findById(params.id).populate('reviews');
+    const { id } = await params;
+    const product = await Product.findById(id).populate('reviews');
     if (!product) {
       // Return sample if not found
-      if (params.id === '1') {
+      if (id === '1') {
         return NextResponse.json({
           _id: '1',
           name: 'Organic Wheat',

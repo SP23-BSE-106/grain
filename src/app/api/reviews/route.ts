@@ -6,7 +6,12 @@ import { verifyToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    const user = verifyToken(request);
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const token = authHeader.substring(7);
+    const user = verifyToken(token);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
