@@ -221,12 +221,12 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-beige">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-olive-green mb-8">Admin Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-olive-green mb-8">Admin Dashboard</h1>
 
-        <div className="flex space-x-4 mb-8">
+        <div className="flex flex-wrap gap-2 mb-8">
           <button
             onClick={() => setActiveTab('products')}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
               activeTab === 'products'
                 ? 'bg-olive-green text-white'
                 : 'bg-white text-olive-green border border-olive-green'
@@ -236,7 +236,7 @@ const AdminDashboard = () => {
           </button>
           <button
             onClick={() => setActiveTab('orders')}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
               activeTab === 'orders'
                 ? 'bg-olive-green text-white'
                 : 'bg-white text-olive-green border border-olive-green'
@@ -246,7 +246,7 @@ const AdminDashboard = () => {
           </button>
           <button
             onClick={() => setActiveTab('users')}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
               activeTab === 'users'
                 ? 'bg-olive-green text-white'
                 : 'bg-white text-olive-green border border-olive-green'
@@ -305,10 +305,10 @@ const AdminDashboard = () => {
                   rows={3}
                 />
               </div>
-              <div className="flex space-x-2 mt-4">
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
                 <button
                   onClick={editingProduct ? handleUpdateProduct : handleCreateProduct}
-                  className="px-4 py-2 bg-olive-green text-white rounded hover:bg-green-700 transition"
+                  className="px-4 py-2 bg-olive-green text-white rounded hover:bg-green-700 transition text-sm sm:text-base"
                 >
                   {editingProduct ? 'Update Product' : 'Add Product'}
                 </button>
@@ -318,7 +318,7 @@ const AdminDashboard = () => {
                       setEditingProduct(null);
                       setFormData({ name: '', category: '', price: '', description: '', image: '', stock: '' });
                     }}
-                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition text-sm sm:text-base"
                   >
                     Cancel
                   </button>
@@ -344,18 +344,20 @@ const AdminDashboard = () => {
                       <td className="py-2">${product.price}</td>
                       <td className="py-2">{product.stock}</td>
                       <td className="py-2">
-                        <button
-                          onClick={() => handleEditProduct(product)}
-                          className="px-2 py-1 bg-blue-600 text-white rounded mr-2 hover:bg-blue-700 transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteProduct(product._id)}
-                          className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex flex-col sm:flex-row gap-1">
+                          <button
+                            onClick={() => handleEditProduct(product)}
+                            className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs sm:text-sm"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(product._id)}
+                            className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs sm:text-sm"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
