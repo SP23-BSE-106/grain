@@ -1,13 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
-
-// TypeScript interface for the decoded JWT payload
-interface DecodedToken {
-  id: string;
-  role: string;
-  iat: number;
-  exp: number;
-}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -28,18 +19,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    // Step 5: Verify the token using the verifyToken function
-    // This checks if the token is valid and not expired
-    const decoded = verifyToken(token) as DecodedToken | null;
-
-    // Step 6: If token is invalid or user is not an admin, redirect to /login
-    if (!decoded || decoded.role !== 'admin') {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    // Optional: For extra security, you can validate the token via API
-    // Uncomment the following lines to use /api/verifyToken instead of direct verification
-    /*
+    // Step 5: Verify the token by calling the /api/verifyToken endpoint
+    // This ensures proper validation and works reliably on Vercel
     try {
       const verifyResponse = await fetch(new URL('/api/verifyToken', request.url), {
         method: 'POST',
@@ -49,11 +30,14 @@ export async function middleware(request: NextRequest) {
       if (!verifyResponse.ok) {
         return NextResponse.redirect(new URL('/login', request.url));
       }
+      const verifyData = await verifyResponse.json();
+      if (!verifyData.valid || verifyData.user?.role !== 'admin') {
+        return NextResponse.redirect(new URL('/login', request.url));
+      }
     } catch (error) {
       console.error('Token verification failed:', error);
       return NextResponse.redirect(new URL('/login', request.url));
     }
-    */
   }
 
   // Step 7: Allow the request to proceed if not protected or authenticated

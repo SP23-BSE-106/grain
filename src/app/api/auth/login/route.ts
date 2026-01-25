@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax' as const,
+      sameSite: isProduction ? 'none' as const : 'lax' as const,
       path: '/',
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
