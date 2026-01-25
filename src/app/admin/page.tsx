@@ -39,6 +39,7 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [storeLoaded, setStoreLoaded] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -48,6 +49,10 @@ const AdminDashboard = () => {
     image: '',
     stock: ''
   });
+
+  useEffect(() => {
+    setStoreLoaded(true);
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -78,12 +83,17 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    if (user && user.role === 'admin') {
+    if (!storeLoaded) return;
+    if (!user || !token) {
+      router.push('/login');
+      return;
+    }
+    if (user.role === 'admin') {
       fetchData();
     } else {
       router.push('/login');
     }
-  }, [user]);
+  }, [storeLoaded, user?.id, token]);
 
   const handleCreateProduct = async () => {
     try {
