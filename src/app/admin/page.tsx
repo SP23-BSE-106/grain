@@ -32,7 +32,7 @@ interface User {
 }
 
 const AdminDashboard = () => {
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState<Product[]>([]);
@@ -51,19 +51,28 @@ const AdminDashboard = () => {
 
   const fetchData = async () => {
     try {
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+      };
       const [productsRes, ordersRes, usersRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/orders'),
-        fetch('/api/users?all=true')
+        fetch('/api/products', { headers }),
+        fetch('/api/orders', { headers }),
+        fetch('/api/users?all=true', { headers })
       ]);
-      const productsData = await productsRes.json();
-      const ordersData = await ordersRes.json();
-      const usersData = await usersRes.json();
-      setProducts(productsData);
-      setOrders(ordersData);
-      setUsers(usersData);
+      if (productsRes.ok && ordersRes.ok && usersRes.ok) {
+        const productsData = await productsRes.json();
+        const ordersData = await ordersRes.json();
+        const usersData = await usersRes.json();
+        setProducts(productsData);
+        setOrders(ordersData);
+        setUsers(usersData);
+      } else {
+        console.error('Failed to fetch data');
+        router.push('/login');
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
+      router.push('/login');
     }
     setLoading(false);
   };
