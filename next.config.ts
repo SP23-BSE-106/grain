@@ -2,11 +2,24 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Configuration for Next.js
-  async rewrites() {
+  async headers() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'https://your-backend-url.com/api/:path*',
+        source: '/admin/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+          {
+            key: 'Expires',
+            value: '0',
+          },
+        ],
       },
     ];
   },
