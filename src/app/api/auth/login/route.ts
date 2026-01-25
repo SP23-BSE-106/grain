@@ -21,8 +21,14 @@ export async function POST(request: NextRequest) {
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
-    response.cookies.set('refreshToken', refreshToken, { httpOnly: true, secure: isProduction, sameSite: 'strict' });
-    response.cookies.set('token', accessToken, { httpOnly: true, secure: isProduction, sameSite: 'strict' });
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax' as const,
+      path: '/',
+    };
+    response.cookies.set('refreshToken', refreshToken, cookieOptions);
+    response.cookies.set('token', accessToken, cookieOptions);
     return response;
   } catch (error) {
     console.error('Login error:', error);
