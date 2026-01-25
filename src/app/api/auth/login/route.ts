@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const isProduction = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
     response.cookies.set('refreshToken', refreshToken, { httpOnly: true, secure: isProduction, sameSite: 'strict' });
-    response.cookies.set('accessToken', accessToken, { httpOnly: true, secure: isProduction, sameSite: 'strict' });
+    response.cookies.set('token', accessToken, { httpOnly: true, secure: isProduction, sameSite: 'strict' });
     return response;
   } catch (error) {
     console.error('Login error:', error);
