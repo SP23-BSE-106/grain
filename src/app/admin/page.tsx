@@ -54,7 +54,7 @@ const AdminDashboard = () => {
       const [productsRes, ordersRes, usersRes] = await Promise.all([
         fetch('/api/products'),
         fetch('/api/orders'),
-        fetch('/api/users')
+        fetch('/api/users?all=true')
       ]);
       const productsData = await productsRes.json();
       const ordersData = await ordersRes.json();

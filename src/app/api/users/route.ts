@@ -23,17 +23,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const currentUser = await User.findById(decoded.id).select('-password');
-    if (!currentUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
+    const url = new URL(request.url);
+    const all = url.searchParams.get('all');
 
-    // If admin, return all users; otherwise, return current user's profile
-    if (currentUser.role === 'admin') {
+    if (all === 'true') {
+      // Return all users for admin dashboard
+      const currentUser = await User.findById(decoded.id).select('-password');
+      if (!currentUser || currentUser.role !== 'admin') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
       const users = await User.find({}).select('-password');
       return NextResponse.json(users);
     } else {
-      return NextResponse.json(currentUser);
+      // Return current user's profile
+      const user = await User.findById(decoded.id).select('-password');
+      if (!user) {
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      }
+      return NextResponse.json(user);
     }
   } catch (error) {
     console.error('Error fetching users:', error);
