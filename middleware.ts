@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Define protected routes
-  const protectedRoutes = [];
+  const protectedRoutes: string[] = [];
 
   // Check if the current path is protected
   const isProtected = protectedRoutes.some(route => pathname.startsWith(route));
