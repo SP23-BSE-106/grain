@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCartStore } from '@/stores/cartStore';
 import { Star, Heart } from 'lucide-react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 interface Product {
   _id: string;
@@ -26,7 +27,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
-    // Implement wishlist functionality here
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
   return (

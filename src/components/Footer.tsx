@@ -7,7 +7,7 @@ const Footer = () => {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-bold mb-4 text-wheat-brown">GrainyMart</h3>
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Your trusted source for premium grains and pulses. We're committed to providing the highest quality
+              Your trusted source for premium grains and pulses. We&apos;re committed to providing the highest quality
               organic products for a healthy lifestyle.
             </p>
             <div className="flex space-x-4">

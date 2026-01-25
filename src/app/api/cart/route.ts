@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
-import User from '@/models/User';
+import Cart from '@/models/Cart';
 import { verifyToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -23,25 +23,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const currentUser = await User.findById(decoded.id).select('-password');
-    if (!currentUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    const cart = await Cart.findOne({ user: decoded.id }).populate('items.product');
+    if (!cart) {
+      return NextResponse.json({ items: [] });
     }
 
-    // If admin, return all users; otherwise, return current user's profile
-    if (currentUser.role === 'admin') {
-      const users = await User.find({}).select('-password');
-      return NextResponse.json(users);
-    } else {
-      return NextResponse.json(currentUser);
-    }
+    return NextResponse.json(cart);
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error('Error fetching cart:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
@@ -61,30 +55,24 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const { name, email } = await request.json();
-    if (!name || !email) {
-      return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
+    const { items } = await request.json();
+    if (!items || !Array.isArray(items)) {
+      return NextResponse.json({ error: 'Invalid items data' }, { status: 400 });
     }
 
-    // Check if email is already taken by another user
-    const existingUser = await User.findOne({ email, _id: { $ne: decoded.id } });
-    if (existingUser) {
-      return NextResponse.json({ error: 'Email already in use' }, { status: 400 });
+    let cart = await Cart.findOne({ user: decoded.id });
+    if (!cart) {
+      cart = new Cart({ user: decoded.id, items });
+    } else {
+      cart.items = items;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      decoded.id,
-      { name, email },
-      { new: true }
-    ).select('-password');
+    await cart.save();
+    await cart.populate('items.product');
 
-    if (!updatedUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    return NextResponse.json(updatedUser);
+    return NextResponse.json(cart);
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error('Error updating cart:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

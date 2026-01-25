@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  turbopack: {
-    root: 'D:/Sixth semester/Projects/grain',
-  },
+  // Configuration for Next.js
 };
 
 export default nextConfig;

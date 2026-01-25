@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       let product;
       try {
         product = await Product.findOne({ _id: new mongoose.Types.ObjectId(item.product._id) });
-      } catch (error) {
+      } catch {
         // If _id is not a valid ObjectId, try finding by name
         product = await Product.findOne({ name: item.product.name });
       }

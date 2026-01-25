@@ -29,6 +29,12 @@ const Header = () => {
             {user ? (
               <>
                 <span className="text-olive-green font-medium">Hello, {user.name}</span>
+                <Link href="/profile" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
+                  Profile
+                </Link>
+                <Link href="/orders" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
+                  Orders
+                </Link>
                 {user.role === 'admin' && (
                   <Link href="/admin" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
                     Admin
@@ -85,6 +91,20 @@ const Header = () => {
               {user ? (
                 <>
                   <span className="text-olive-green font-medium">Hello, {user.name}</span>
+                  <Link
+                    href="/profile"
+                    className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    href="/orders"
+                    className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Orders
+                  </Link>
                   {user.role === 'admin' && (
                     <Link
                       href="/admin"

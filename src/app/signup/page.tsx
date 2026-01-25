@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuthStore } from '@/stores/authStore';
+import toast from 'react-hot-toast';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -42,12 +43,13 @@ const Signup = () => {
       });
       const result = await res.json();
       if (res.ok) {
+        toast.success('Account created successfully! Please log in.');
         router.push('/login');
       } else {
-        alert(result.error);
+        toast.error(result.error);
       }
     } catch (error) {
-      alert('Error signing up');
+      toast.error('Error signing up');
     }
     setLoading(false);
   };

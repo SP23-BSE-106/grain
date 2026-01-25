@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
 
 const schema = z.object({
@@ -31,12 +32,13 @@ const Login = () => {
       const result = await res.json();
       if (res.ok) {
         login(result.user, result.accessToken);
+        toast.success('Login successful!');
         router.push('/');
       } else {
-        alert(result.error);
+        toast.error(result.error);
       }
     } catch (error) {
-      alert('Error logging in');
+      toast.error('Error logging in');
     }
     setLoading(false);
   };

@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "set NEXT_USE_TURBOPACK=false && next build",
+    "dev": "set NEXT_USE_TURBOPACK=0 && next dev",
+    "build": "set NEXT_USE_TURBOPACK=0 && next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -20,6 +20,8 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.1",
+    "react-hot-toast": "^2.6.0",
+    "stripe": "^20.2.0",
     "tsx": "^4.21.0",
     "zod": "^4.3.5",
     "zustand": "^5.0.10"

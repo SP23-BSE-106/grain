@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import connectToDatabase from '@/lib/mongoose';
 import User from '@/models/User';
-import { generateToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +27,7 @@ export async function POST(request: NextRequest) {
       path: '/',
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
-    response.cookies.set('token', accessToken, cookieOptions);
+    response.cookies.set('accessToken', accessToken, cookieOptions);
     return response;
   } catch (error) {
     console.error('Login error:', error);

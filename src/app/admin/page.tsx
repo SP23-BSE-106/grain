@@ -10,6 +10,8 @@ interface Product {
   price: number;
   stock: number;
   category: string;
+  description: string;
+  image: string;
 }
 
 interface Order {
@@ -37,14 +39,15 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!user || user.role !== 'admin') {
-      router.push('/');
-      return;
-    }
-    fetchData();
-  }, [user, router]);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    price: '',
+    description: '',
+    image: '',
+    stock: ''
+  });
 
   const fetchData = async () => {
     try {
@@ -63,6 +66,90 @@ const AdminDashboard = () => {
       console.error('Error fetching data:', error);
     }
     setLoading(false);
+  };
+
+  useEffect(() => {
+    if (user && user.role === 'admin') {
+      fetchData();
+    } else {
+      router.push('/login');
+    }
+  }, [user]);
+
+  const handleCreateProduct = async () => {
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          category: formData.category,
+          price: parseFloat(formData.price),
+          description: formData.description,
+          image: formData.image,
+          stock: parseInt(formData.stock),
+        }),
+      });
+      if (res.ok) {
+        const newProduct = await res.json();
+        setProducts([...products, newProduct]);
+        setFormData({ name: '', category: '', price: '', description: '', image: '', stock: '' });
+      }
+    } catch (error) {
+      console.error('Error creating product:', error);
+    }
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      category: product.category,
+      price: product.price.toString(),
+      description: product.description,
+      image: product.image,
+      stock: product.stock.toString(),
+    });
+  };
+
+  const handleUpdateProduct = async () => {
+    if (!editingProduct) return;
+    try {
+      const res = await fetch(`/api/products/${editingProduct._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          category: formData.category,
+          price: parseFloat(formData.price),
+          description: formData.description,
+          image: formData.image,
+          stock: parseInt(formData.stock),
+        }),
+      });
+      if (res.ok) {
+        const updatedProduct = await res.json();
+        setProducts(products.map(p => p._id === editingProduct._id ? updatedProduct : p));
+        setEditingProduct(null);
+        setFormData({ name: '', category: '', price: '', description: '', image: '', stock: '' });
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setProducts(products.filter(p => p._id !== productId));
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
   };
 
   const updateOrderStatus = async (orderId: string, status: Order['status']) => {
@@ -125,6 +212,72 @@ const AdminDashboard = () => {
         {activeTab === 'products' && (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-bold mb-4">Products</h2>
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="border rounded px-3 py-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Category"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="border rounded px-3 py-2"
+                />
+                <input
+                  type="number"
+                  placeholder="Price"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  className="border rounded px-3 py-2"
+                />
+                <input
+                  type="number"
+                  placeholder="Stock"
+                  value={formData.stock}
+                  onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                  className="border rounded px-3 py-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Image URL"
+                  value={formData.image}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  className="border rounded px-3 py-2"
+                />
+                <textarea
+                  placeholder="Description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="border rounded px-3 py-2"
+                  rows={3}
+                />
+              </div>
+              <div className="flex space-x-2 mt-4">
+                <button
+                  onClick={editingProduct ? handleUpdateProduct : handleCreateProduct}
+                  className="px-4 py-2 bg-olive-green text-white rounded hover:bg-green-700 transition"
+                >
+                  {editingProduct ? 'Update Product' : 'Add Product'}
+                </button>
+                {editingProduct && (
+                  <button
+                    onClick={() => {
+                      setEditingProduct(null);
+                      setFormData({ name: '', category: '', price: '', description: '', image: '', stock: '' });
+                    }}
+                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -133,6 +286,7 @@ const AdminDashboard = () => {
                     <th className="text-left py-2">Category</th>
                     <th className="text-left py-2">Price</th>
                     <th className="text-left py-2">Stock</th>
+                    <th className="text-left py-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -142,6 +296,20 @@ const AdminDashboard = () => {
                       <td className="py-2">{product.category}</td>
                       <td className="py-2">${product.price}</td>
                       <td className="py-2">{product.stock}</td>
+                      <td className="py-2">
+                        <button
+                          onClick={() => handleEditProduct(product)}
+                          className="px-2 py-1 bg-blue-600 text-white rounded mr-2 hover:bg-blue-700 transition"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product._id)}
+                          className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
