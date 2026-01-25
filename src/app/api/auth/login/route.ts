@@ -13,11 +13,12 @@ export async function POST(request: NextRequest) {
     if (!user || !await bcrypt.compare(password, user.password)) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
+    console.log('Login: User found, role:', user.role);
     if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
       console.error('JWT secrets not configured');
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
-    const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+    const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '7d' });
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
@@ -30,6 +31,7 @@ export async function POST(request: NextRequest) {
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
+    console.log('Cookies set in response');
     return response;
   } catch (error) {
     console.error('Login error:', error);

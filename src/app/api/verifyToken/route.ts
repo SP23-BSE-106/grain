@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
     if (!decoded) {
       return NextResponse.json({ valid: false }, { status: 401 });
     }
+    console.log('VerifyToken: Decoded id:', decoded.id, 'role:', decoded.role);
 
     // Step 4: Connect to database and fetch user details
     await connectToDatabase();

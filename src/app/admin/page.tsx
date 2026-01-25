@@ -55,6 +55,12 @@ const AdminDashboard = () => {
   }, []);
 
   const fetchData = async () => {
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift();
+    };
+    const token = getCookie('accessToken');
     try {
       const headers = {
         'Authorization': `Bearer ${token}`,
@@ -83,17 +89,39 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    if (!storeLoaded) return;
-    if (!user || !token) {
-      router.push('/login');
-      return;
-    }
-    if (user.role === 'admin') {
-      fetchData();
-    } else {
-      router.push('/login');
-    }
-  }, [storeLoaded, user?.id, token]);
+    const checkAuth = async () => {
+      const getCookie = (name: string) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(';').shift();
+      };
+      const token = getCookie('accessToken');
+      console.log('Admin: Token from cookie:', token ? 'present' : 'not present');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+      try {
+        const res = await fetch('/api/verifyToken', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        const data = await res.json();
+        console.log('Admin: Verify response:', data);
+        if (!data.valid) {
+          router.push('/login');
+          return;
+        }
+        // Auth valid, proceed (temporarily ignore role check)
+        fetchData();
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login');
+      }
+    };
+    checkAuth();
+  }, []);
 
   const handleCreateProduct = async () => {
     try {

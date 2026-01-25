@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/mongoose';
 import Order from '@/models/Order';
 import Product from '@/models/Product';
+import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
