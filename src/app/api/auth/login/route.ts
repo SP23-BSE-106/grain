@@ -6,6 +6,7 @@ import User from '@/models/User';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Login API: JWT_ACCESS_SECRET set:', !!process.env.JWT_ACCESS_SECRET);
     await connectToDatabase();
     const { email, password } = await request.json();
     const user = await User.findOne({ email });
@@ -23,9 +24,9 @@ export async function POST(request: NextRequest) {
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'none' as const : 'lax' as const,
+      sameSite: 'lax' as const,
       path: '/',
-      domain: isProduction ? new URL(process.env.VERCEL_URL!).hostname : undefined,
+      domain: undefined,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 
 export function middleware(request: NextRequest) {
+  console.log('Middleware: JWT_ACCESS_SECRET set:', !!process.env.JWT_ACCESS_SECRET);
   const { pathname } = request.nextUrl;
 
   // Define protected routes
