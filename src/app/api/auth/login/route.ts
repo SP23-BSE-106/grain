@@ -25,9 +25,10 @@ export async function POST(request: NextRequest) {
       secure: isProduction,
       sameSite: isProduction ? 'none' as const : 'lax' as const,
       path: '/',
+      domain: isProduction ? new URL(process.env.VERCEL_URL!).hostname : undefined,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
-    response.cookies.set('accessToken', accessToken, cookieOptions);
+    response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
     return response;
   } catch (error) {
     console.error('Login error:', error);
