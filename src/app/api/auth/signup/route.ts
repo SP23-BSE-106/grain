@@ -7,7 +7,7 @@ import User from '@/models/User';
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
-    const { name, email, password } = await request.json();
+    const { name, email, password, role } = await request.json();
     if (!name || !email || !password) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
@@ -15,8 +15,6 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 });
     }
-    const usersCount = await User.countDocuments();
-    const role = usersCount === 0 ? 'admin' : 'user';
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ name, email, password: hashedPassword, role });
     await user.save();

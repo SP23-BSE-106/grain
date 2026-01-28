@@ -54,6 +54,12 @@ const AdminDashboard = () => {
     setStoreLoaded(true);
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, router]);
+
   const fetchData = async () => {
     const getCookie = (name: string) => {
       const value = `; ${document.cookie}`;
@@ -109,11 +115,11 @@ const AdminDashboard = () => {
         });
         const data = await res.json();
         console.log('Admin: Verify response:', data);
-        if (!data.valid) {
+        if (!data.valid || data.user.role !== 'admin') {
           router.push('/login');
           return;
         }
-        // Auth valid, proceed (temporarily ignore role check)
+        // Auth valid and role is admin, proceed
         fetchData();
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -216,7 +222,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-beige text-gray-900">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-beige">
@@ -258,7 +264,7 @@ const AdminDashboard = () => {
 
         {activeTab === 'products' && (
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Products</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Products</h2>
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

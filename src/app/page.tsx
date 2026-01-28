@@ -93,13 +93,13 @@ const Home = () => {
               </div>
             </Link>
             <Link href="/shop?category=flours" className="group">
-              <div className="bg-gradient-to-br from-beige to-wheat-brown/20 p-8 rounded-2xl text-center card-hover">
-                <div className="w-16 h-16 bg-olive-green rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="bg-gradient-to-br from-beige to-wheat-brown/20  p-8 rounded-2xl text-center card-hover">
+                <div className="w-16 h-16 bg-olive-green  rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Award className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-olive-green mb-4">Flours</h3>
                 <p className="text-gray-700 mb-4">Whole Wheat, Cornmeal, Rice Flour, and specialty flours for all your baking needs.</p>
-                <span className="text-wheat-brown font-semibold group-hover:text-olive-green transition-colors duration-200">
+                <span className="text-wheat-brown  font-semibold group-hover:text-olive-green transition-colors duration-200">
                   Shop Flours →
                 </span>
               </div>

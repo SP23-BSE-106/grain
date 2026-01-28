@@ -84,7 +84,7 @@ const Shop = () => {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
               />
             </div>
 
@@ -94,7 +94,7 @@ const Shop = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent"
+                className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white text-gray-900"
               >
                 <option value="">Sort by</option>
                 <option value="price_asc">Price: Low to High</option>
@@ -123,7 +123,7 @@ const Shop = () => {
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value="">All Categories</option>
                     {categories.map(category => (
@@ -140,7 +140,7 @@ const Shop = () => {
                     placeholder="0"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white text-gray-900"
                   />
                 </div>
 
@@ -152,7 +152,7 @@ const Shop = () => {
                     placeholder="100"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>

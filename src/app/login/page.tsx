@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,6 +10,7 @@ import { useAuthStore } from '@/stores/authStore';
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(1, 'Password is required'),
+  role: z.enum(['user', 'admin']),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -20,6 +21,8 @@ const Login = () => {
   });
   const { login } = useAuthStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get('returnUrl') || '/';
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -33,7 +36,7 @@ const Login = () => {
       if (res.ok) {
         login(result.user, result.accessToken);
         toast.success('Login successful!');
-        router.push('/');
+        router.push(returnUrl);
       } else {
         toast.error(result.error);
       }
@@ -55,7 +58,7 @@ const Login = () => {
             <input
               {...register('email')}
               type="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
               placeholder="Enter your email"
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -65,10 +68,22 @@ const Login = () => {
             <input
               {...register('password')}
               type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500"
               placeholder="Enter your password"
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+            <select
+              {...register('role')}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 bg-white text-gray-900"
+            >
+              <option value="">Select a role</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+            {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
           </div>
           <button
             type="submit"
@@ -79,7 +94,6 @@ const Login = () => {
           </button>
         </form>
         <div className="mt-6 text-center">
-          <p className="text-gray-600">Don&apos;t have an account? <a href="/signup" className="text-olive-green hover:text-wheat-brown font-medium transition-colors duration-200">Create one</a></p>
         </div>
       </div>
     </div>

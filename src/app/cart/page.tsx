@@ -17,7 +17,7 @@ interface CartItem {
 }
 
 const Cart = () => {
-  const { user, token } = useAuthStore();
+  const { user, token, isHydrated } = useAuthStore();
   const { items, savedForLater, isLoading, removeItem, clearCart, saveForLater, moveToCart, saveCart } = useCartStore();
   const router = useRouter();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -25,8 +25,12 @@ const Cart = () => {
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   const handleCheckout = async () => {
+    if (!isHydrated) {
+      // Wait for hydration
+      return;
+    }
     if (!user) {
-      router.push('/login');
+      router.push('/login?returnUrl=' + encodeURIComponent('/cart'));
       return;
     }
 
@@ -56,12 +60,12 @@ const Cart = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-beige flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-green mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your cart...</p>
-        </div>
+    <div className="min-h-screen bg-beige flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-green mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading your cart...</p>
       </div>
+    </div>
     );
   }
 
@@ -87,20 +91,20 @@ const Cart = () => {
         {/* Cart Items */}
         {items.length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4">Cart Items</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Cart Items</h2>
             <div className="space-y-4">
               {items.map((item, index) => (
-                <div key={index} className="flex items-center justify-between border-b pb-4">
+                <div key={index} className="flex items-center justify-between border-b border-gray-200 pb-4">
                   <div className="flex items-center space-x-4">
                     <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover rounded" />
                     <div>
-                      <h3 className="font-medium">{item.product.name}</h3>
+                      <h3 className="font-medium text-gray-900">{item.product.name}</h3>
                       <p className="text-gray-600">${item.product.price}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <span className="font-medium">Qty: {item.quantity}</span>
-                    <span className="font-bold">${(item.product.price * item.quantity).toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">Qty: {item.quantity}</span>
+                    <span className="font-bold text-gray-900">${(item.product.price * item.quantity).toFixed(2)}</span>
                     <button
                       onClick={() => saveForLater(item)}
                       className="text-blue-600 hover:text-blue-800 text-sm"
@@ -119,7 +123,7 @@ const Cart = () => {
             </div>
 
             <div className="mt-6 flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Total: ${total.toFixed(2)}</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Total: ${total.toFixed(2)}</h2>
               <div className="space-x-4">
                 <button
                   onClick={async () => {
@@ -128,7 +132,7 @@ const Cart = () => {
                       await saveCart(user.id, token);
                     }
                   }}
-                  className="px-6 py-2 border border-gray-300 rounded hover:bg-gray-50 transition"
+                  className="px-6 py-2 border border-gray-300 rounded hover:bg-gray-50 transition text-gray-900"
                 >
                   Clear Cart
                 </button>

@@ -68,7 +68,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               />
             ))}
           </div>
-          <span className="ml-2 text-sm text-gray-600">{product.rating}/5</span>
+          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{product.rating}/5</span>
         </div>
         <p className="text-xl font-bold text-olive-green mt-2">${product.price.toFixed(2)}</p>
         <button

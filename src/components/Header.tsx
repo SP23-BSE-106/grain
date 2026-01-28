@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useCartStore } from '@/stores/cartStore';
 import { ShoppingCart, User, Menu, X } from 'lucide-react';
@@ -10,8 +11,19 @@ const Header = () => {
   const { user, logout } = useAuthStore();
   const { items } = useCartStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    logout();
+    router.push('/');
+  };
 
   return (
     <header className="bg-beige shadow-md sticky top-0 z-50">
@@ -41,7 +53,7 @@ const Header = () => {
                   </Link>
                 )}
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium focus-ring"
                 >
                   Logout
@@ -116,7 +128,7 @@ const Header = () => {
                   )}
                   <button
                     onClick={() => {
-                      logout();
+                      handleLogout();
                       setIsMenuOpen(false);
                     }}
                     className="text-left text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium focus-ring"

@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 
 const CheckoutSuccessContent = () => {
-  const { user, token } = useAuthStore();
+  const { user, token, isHydrated } = useAuthStore();
   const { clearCart } = useCartStore();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -17,6 +17,8 @@ const CheckoutSuccessContent = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isHydrated) return;
+
     if (!user) {
       router.push('/login');
       return;
@@ -30,18 +32,18 @@ const CheckoutSuccessContent = () => {
     // Clear the cart after successful payment
     clearCart();
     setLoading(false);
-  }, [user, sessionId, router, clearCart]);
+  }, [user, isHydrated, sessionId, router, clearCart]);
 
   useEffect(() => {
     if (sessionId) {
       setOrderDetails({
         sessionId,
-        status: 'paid',
+        status: 'pending',
       });
     }
   }, [sessionId]);
 
-  if (!user) {
+  if (!isHydrated || !user) {
     return (
       <div className="min-h-screen bg-beige flex items-center justify-center">
         <div className="text-center">

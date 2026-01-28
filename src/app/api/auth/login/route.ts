@@ -8,10 +8,13 @@ export async function POST(request: NextRequest) {
   try {
     console.log('Login API: JWT_ACCESS_SECRET set:', !!process.env.JWT_ACCESS_SECRET);
     await connectToDatabase();
-    const { email, password } = await request.json();
+    const { email, password, role } = await request.json();
     const user = await User.findOne({ email });
     if (!user || !await bcrypt.compare(password, user.password)) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+    if (user.role !== role) {
+      return NextResponse.json({ error: 'Role mismatch' }, { status: 403 });
     }
     console.log('Login: User found, role:', user.role);
     if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {

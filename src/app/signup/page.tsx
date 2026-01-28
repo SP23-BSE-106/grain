@@ -54,18 +54,23 @@ const Signup = () => {
     setLoading(false);
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-beige to-wheat-brown/20 px-4">
-      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border border-gray-100">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-olive-green mb-2">Join GrainyMart</h2>
-          <p className="text-gray-600">Create your account to get started</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-beige via-wheat-brown/10 to-olive-green/5 px-4 py-8">
+      <div className="bg-white/95 backdrop-blur-sm p-8 sm:p-10 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100/50">
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 bg-gradient-to-br from-olive-green to-dark-green rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-olive-green mb-3">Join GrainyMart</h2>
+          <p className="text-gray-600 text-lg">Create your account to get started</p>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
             <input
               {...register('name')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
               placeholder="Enter your full name"
             />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
@@ -75,7 +80,7 @@ const Signup = () => {
             <input
               {...register('email')}
               type="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
               placeholder="Enter your email"
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -85,7 +90,7 @@ const Signup = () => {
             <input
               {...register('password')}
               type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
               placeholder="Create a password"
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
@@ -95,7 +100,7 @@ const Signup = () => {
             <input
               {...register('confirmPassword')}
               type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
               placeholder="Confirm your password"
             />
             {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
@@ -104,7 +109,7 @@ const Signup = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
             <select
               {...register('role')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
             >
               <option value="">Select a role</option>
               <option value="user">User</option>
@@ -115,7 +120,7 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-olive-green text-white py-3 rounded-lg hover:bg-wheat-brown transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-olive-green to-dark-green text-white py-3 rounded-lg hover:from-dark-green hover:to-olive-green transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
