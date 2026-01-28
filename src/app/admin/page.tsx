@@ -331,7 +331,8 @@ const AdminDashboard = () => {
                 )}
               </div>
             </div>
-            <div className="overflow-x-auto">
+            {/* Desktop Table */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
@@ -369,6 +370,32 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="block sm:hidden space-y-4">
+              {products.map(product => (
+                <div key={product._id} className="border rounded-lg p-4 bg-gray-50">
+                  <h3 className="font-bold text-lg text-gray-900">{product.name}</h3>
+                  <p className="text-gray-600">Category: {product.category}</p>
+                  <p className="text-gray-600">Price: ${product.price}</p>
+                  <p className="text-gray-600">Stock: {product.stock}</p>
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => handleEditProduct(product)}
+                      className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteProduct(product._id)}
+                      className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -428,7 +455,8 @@ const AdminDashboard = () => {
         {activeTab === 'users' && (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-bold mb-4">Users</h2>
-            <div className="overflow-x-auto">
+            {/* Desktop Table */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
@@ -449,6 +477,18 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="block sm:hidden space-y-4">
+              {users.map(user => (
+                <div key={user._id} className="border rounded-lg p-4 bg-gray-50">
+                  <h3 className="font-bold text-lg text-gray-900">{user.name}</h3>
+                  <p className="text-gray-600">Email: {user.email}</p>
+                  <p className="text-gray-600">Role: {user.role}</p>
+                  <p className="text-gray-600">Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
+                </div>
+              ))}
             </div>
           </div>
         )}
