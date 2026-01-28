@@ -1,11 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
+
+export const dynamic = 'force-dynamic';
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
@@ -15,7 +17,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const Login = () => {
+const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
@@ -97,6 +99,14 @@ const Login = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Login = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 };
 
