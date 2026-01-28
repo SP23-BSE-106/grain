@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/mongoose';
 import Order from '@/models/Order';
 import Cart from '@/models/Cart';
+import Product from '@/models/Product';
 import { verifyToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -29,22 +31,48 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
     }
 
-    // Calculate total
-    const total = items.reduce((sum: number, item: any) => sum + item.product.price * item.quantity, 0);
+    // Check stock and calculate total
+    let total = 0;
+    const orderItems = [];
+
+    for (const item of items) {
+      let product;
+      try {
+        product = await Product.findOne({ _id: new mongoose.Types.ObjectId(item.product._id) });
+      } catch {
+        // If _id is not a valid ObjectId, try finding by name
+        product = await Product.findOne({ name: item.product.name });
+      }
+      if (!product) {
+        return NextResponse.json({ error: `Product ${item.product.name} not found` }, { status: 404 });
+      }
+      if (product.stock < item.quantity) {
+        return NextResponse.json({ error: `Insufficient stock for ${product.name}` }, { status: 400 });
+      }
+      orderItems.push({
+        product: product._id,
+        quantity: item.quantity,
+        price: product.price,
+      });
+      total += product.price * item.quantity;
+    }
 
     // Create order
     const order = new Order({
       user: decoded.id,
-      items: items.map((item: any) => ({
-        product: item.product._id,
-        quantity: item.quantity,
-        price: item.product.price,
-      })),
+      items: orderItems,
       total,
       status: 'pending',
     });
 
     await order.save();
+
+    // Update product stock
+    for (const item of orderItems) {
+      await Product.findByIdAndUpdate(item.product, {
+        $inc: { stock: -item.quantity }
+      });
+    }
 
     // Clear cart
     await Cart.findOneAndUpdate({ user: decoded.id }, { items: [] });

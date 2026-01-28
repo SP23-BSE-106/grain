@@ -9,3 +9,10 @@
 - [x] Remove dark mode classes from other pages (orders, admin, profile, etc.)
 - [x] Remove theme toggle button from Header.tsx
 - [x] Update TODO.md to remove dark mode related tasks
+
+# Add Proper Stock Management to Checkout
+
+- [x] Add stock checking and updating logic to checkout API route
+- [x] Ensure stock is checked before order creation
+- [x] Update product stock after order is saved
+- [x] Test checkout process for stock management
