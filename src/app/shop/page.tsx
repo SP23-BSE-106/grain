@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import ProductSkeleton from '@/components/ProductSkeleton';
@@ -226,4 +226,12 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+function ShopPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Shop />
+    </Suspense>
+  );
+}
+
+export default ShopPage;
