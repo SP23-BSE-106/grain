@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import ProductCard from '@/components/ProductCard';
-import { ArrowRight, Star, Truck, Shield, Award } from 'lucide-react';
+import { ArrowRight, Star, Truck, Shield, Award, RefreshCw } from 'lucide-react';
 
 interface Product {
   _id: string;
@@ -18,14 +18,24 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchProducts = () => {
+    setLoading(true);
     fetch('/api/products?limit=4')
       .then(res => res.json())
       .then(data => {
-        setFeaturedProducts(data);
+        if (Array.isArray(data)) {
+          setFeaturedProducts(data);
+        } else {
+          console.error('API returned non-array data:', data);
+          setFeaturedProducts([]);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
   return (
@@ -68,7 +78,7 @@ const Home = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Link href="/shop?category=whole-grains" className="group">
+            <Link href="/shop?category=Whole%20Grains" className="group">
               <div className="bg-gradient-to-br from-beige to-wheat-brown/20 p-8 rounded-2xl text-center card-hover">
                 <div className="w-16 h-16 bg-olive-green rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Star className="w-8 h-8 text-white" />
@@ -80,7 +90,7 @@ const Home = () => {
                 </span>
               </div>
             </Link>
-            <Link href="/shop?category=pulses" className="group">
+            <Link href="/shop?category=Pulses" className="group">
               <div className="bg-gradient-to-br from-beige to-wheat-brown/20 p-8 rounded-2xl text-center card-hover">
                 <div className="w-16 h-16 bg-olive-green rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Shield className="w-8 h-8 text-white" />
@@ -92,7 +102,7 @@ const Home = () => {
                 </span>
               </div>
             </Link>
-            <Link href="/shop?category=flours" className="group">
+            <Link href="/shop?category=Flours" className="group">
               <div className="bg-gradient-to-br from-beige to-wheat-brown/20  p-8 rounded-2xl text-center card-hover">
                 <div className="w-16 h-16 bg-olive-green  rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Award className="w-8 h-8 text-white" />

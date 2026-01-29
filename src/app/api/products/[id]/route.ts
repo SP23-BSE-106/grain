@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           category: 'Whole Grains',
           price: 5.99,
           description: 'High-quality organic wheat grains.',
-          image: '/placeholder.jpg',
+          image: '/next.svg',
           rating: 4.5,
           reviews: []
         });

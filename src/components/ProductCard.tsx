@@ -34,11 +34,9 @@ const ProductCard = ({ product }: { product: Product }) => {
     <div className="bg-white rounded-xl shadow-md p-4 card-hover animate-fade-in focus-ring">
       <div className="relative">
         <Link href={`/product/${product._id}`}>
-          <Image
+          <img
             src={product.image}
             alt={product.name}
-            width={200}
-            height={200}
             className="w-full h-48 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
           />
         </Link>
