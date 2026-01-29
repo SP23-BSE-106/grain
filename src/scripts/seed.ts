@@ -81,8 +81,38 @@ async function seed() {
       category: 'Whole Grains',
       price: 4.49,
       description: 'Healthy barley grains.',
-      image: 'https://plus.unsplash.com/premium_photo-1705146640695-cab3aa2005f4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8QmFybGV5fGVufDB8fDB8fHww',
+      image: 'https://plus.unsplash.com/premium_photo-1705146640695-cab3aa2005f4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8QmFybGV5fGVufDB8fDB8fHww',
       rating: 4.0,
+      stock: 100,
+      reviews: []
+    },
+    {
+      name: 'Whole Wheat Flour',
+      category: 'Flours',
+      price: 6.99,
+      description: 'Premium whole wheat flour for baking.',
+      image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8V2hvbGUlMjBXaGVhdCUyMEZsb3VyfGVufDB8fDB8fHww',
+      rating: 4.6,
+      stock: 100,
+      reviews: []
+    },
+    {
+      name: 'Cornmeal',
+      category: 'Flours',
+      price: 3.49,
+      description: 'Fine cornmeal for various recipes.',
+      image: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Q29ybm1lYWx8ZW58MHx8MHx8fDA%3D',
+      rating: 4.1,
+      stock: 100,
+      reviews: []
+    },
+    {
+      name: 'Rice Flour',
+      category: 'Flours',
+      price: 5.49,
+      description: 'Gluten-free rice flour.',
+      image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8UmljZSUyMEZsb3VyfGVufDB8fDB8fHww',
+      rating: 4.3,
       stock: 100,
       reviews: []
     }
