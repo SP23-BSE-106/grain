@@ -408,8 +408,8 @@ const AdminDashboard = () => {
                 <div key={order._id} className="border rounded-lg p-4">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="font-medium">{order.user.name}</p>
-                      <p className="text-sm text-gray-600">{order.user.email}</p>
+                      <p className="font-medium">{order.user ? order.user.name : 'Unknown User'}</p>
+                      <p className="text-sm text-gray-600">{order.user ? order.user.email : ''}</p>
                       <p className="text-sm text-gray-600">{new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
@@ -422,7 +422,7 @@ const AdminDashboard = () => {
                   <div className="mb-4">
                     {order.items.map((item, index) => (
                       <p key={index} className="text-sm">
-                        {item.product.name} x {item.quantity} - ${item.price * item.quantity}
+                        {item.product ? item.product.name : 'Product not found'} x {item.quantity} - ${item.price * item.quantity}
                       </p>
                     ))}
                   </div>

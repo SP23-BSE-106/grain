@@ -149,7 +149,7 @@ const Orders = () => {
                     <div className="space-y-2">
                       {order.items.map((item, index) => (
                         <div key={index} className="flex justify-between text-sm">
-                          <span>{item.product.name} x {item.quantity}</span>
+                          <span>{item.product?.name || 'Unknown Product'} x {item.quantity}</span>
                           <span>${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                       ))}
