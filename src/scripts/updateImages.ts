@@ -12,7 +12,7 @@ if (!MONGODB_URI) {
 }
 
 async function updateImages() {
-  await mongoose.connect(MONGODB_URI);
+  await mongoose.connect(MONGODB_URI!);
 
   const imageUpdates = {
     'Brown Rice': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8QnJvd24lMjBSaWNlfGVufDB8fDB8fHww',
