@@ -42,21 +42,14 @@ const Shop = () => {
       };
       const cookieToken = getCookie('accessToken');
       if (cookieToken) {
-        // Verify the token from cookies
-        fetch('/api/verifyToken', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: cookieToken }),
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.valid) {
-              useAuthStore.getState().login(data.user, cookieToken);
-            } else {
-              router.push('/login');
-            }
-          })
-          .catch(() => router.push('/login'));
+        // Decode the token to get the user (since middleware already verified it)
+        try {
+          const payload = cookieToken.split('.')[1];
+          const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+          useAuthStore.getState().login(decoded, cookieToken);
+        } catch (e) {
+          router.push('/login');
+        }
       } else {
         router.push('/login');
       }
