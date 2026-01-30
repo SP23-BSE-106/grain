@@ -16,7 +16,7 @@ interface Product {
 }
 
 const Shop = () => {
-  const { user, isHydrated } = useAuthStore();
+  const { user, isHydrated, token } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
@@ -34,9 +34,27 @@ const Shop = () => {
   useEffect(() => {
     if (!isHydrated) return;
     if (!user) {
-      router.push('/login');
+      if (token) {
+        // Verify the token from the store
+        fetch('/api/verifyToken', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.valid) {
+              useAuthStore.getState().login(data.user, token);
+            } else {
+              router.push('/login');
+            }
+          })
+          .catch(() => router.push('/login'));
+      } else {
+        router.push('/login');
+      }
     }
-  }, [user, isHydrated, router]);
+  }, [isHydrated, user, token, router]);
 
   // Initialize state from URL parameters
   useEffect(() => {
