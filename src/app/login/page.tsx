@@ -24,7 +24,7 @@ const LoginForm = () => {
   const { login } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnUrl = searchParams.get('returnUrl') || '/';
+  const returnUrl = searchParams.get('redirect') || '/';
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data: FormData) => {
     setLoading(true);
