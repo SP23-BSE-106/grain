@@ -32,7 +32,7 @@ interface User {
 }
 
 const AdminDashboard = () => {
-  const { user, token } = useAuthStore();
+  const { user, token, isHydrated } = useAuthStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState<Product[]>([]);
@@ -55,10 +55,11 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
+    if (!isHydrated) return;
     if (!user) {
       router.push('/login');
     }
-  }, [user, router]);
+  }, [isHydrated, user, router]);
 
   const fetchData = async () => {
     const getCookie = (name: string) => {
