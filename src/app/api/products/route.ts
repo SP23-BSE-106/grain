@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
 
     products = products.map(product => {
       if (product.image && product.image.includes('shorturl.at')) {
-        product.image = imageUpdates[product.name] || product.image;
+        product.image = imageUpdates[product.name as keyof typeof imageUpdates] || product.image;
       }
       return product;
     });
