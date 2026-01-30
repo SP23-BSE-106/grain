@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       secure: isProduction,
       sameSite: 'lax' as const,
       path: '/',
-      domain: undefined,
+      domain: process.env.VERCEL_URL ? new URL(process.env.VERCEL_URL).hostname : undefined,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
