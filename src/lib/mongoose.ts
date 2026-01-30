@@ -1,6 +1,13 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 
+// Import models to ensure they are registered
+import '@/models/Product';
+import '@/models/Review';
+import '@/models/User';
+import '@/models/Order';
+import '@/models/Cart';
+
 const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {

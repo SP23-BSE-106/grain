@@ -200,6 +200,11 @@ const Shop = () => {
         <div className="mb-6">
           <p className="text-gray-600">
             {products.length} product{products.length !== 1 ? 's' : ''} found
+            {selectedCategory && (
+              <span className="ml-2 text-olive-green font-medium">
+                in {selectedCategory}
+              </span>
+            )}
           </p>
         </div>
 

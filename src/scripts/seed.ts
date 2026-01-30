@@ -21,7 +21,7 @@ async function seed() {
       category: 'Whole Grains',
       price: 4.99,
       description: 'Nutritious brown rice.',
-      image: 'https://shorturl.at/ElsUG',
+      image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8QnJvd24lMjBSaWNlfGVufDB8fDB8fHww',
       rating: 4.0,
       stock: 100,
       reviews: []
@@ -31,7 +31,7 @@ async function seed() {
       category: 'Pulses',
       price: 3.99,
       description: 'Protein-rich lentils.',
-      image: 'https://shorturl.at/Evd2f',
+      image: 'https://images.unsplash.com/photo-1515942400420-2b98fed1a518?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TGVudGlsa3xlbnwwfHwwfHx8MA%3D%3D',
       rating: 4.2,
       stock: 100,
       reviews: []
@@ -41,7 +41,7 @@ async function seed() {
       category: 'Whole Grains',
       price: 7.99,
       description: 'Superfood quinoa.',
-      image: 'https://shorturl.at/L2Ij6',
+      image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8UXVpbm9hfGVufDB8fDB8fHww',
       rating: 4.8,
       stock: 100,
       reviews: []
@@ -51,7 +51,7 @@ async function seed() {
       category: 'Pulses',
       price: 4.49,
       description: 'Versatile chickpeas.',
-      image: 'https://shorturl.at/caSYw',
+      image: 'https://images.unsplash.com/photo-1644432757699-bb5a01e8fb0e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Q2hpY2twZWFzfGVufDB8fDB8fHww',
       rating: 4.3,
       stock: 100,
       reviews: []
@@ -61,7 +61,7 @@ async function seed() {
       category: 'Whole Grains',
       price: 3.99,
       description: 'Nutritious oats.',
-      image: 'https://shorturl.at/7srJu',
+      image: 'https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b2F0c3xlbnwwfHwwfHx8MA%3D%3D',
       rating: 4.1,
       stock: 100,
       reviews: []

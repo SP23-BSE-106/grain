@@ -6,7 +6,8 @@
     "dev": "set NEXT_USE_TURBOPACK=0 && next dev",
     "build": "set NEXT_USE_TURBOPACK=0 && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "update-images": "tsx src/scripts/updateImages.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

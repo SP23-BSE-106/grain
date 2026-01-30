@@ -1,5 +1,8 @@
-# TODO: Update Seed Script with New Products and Images
+# TODO: Enhance CSS with More Green Colors and Reduce Whiteness
 
-- [x] Update image URLs for existing products (Lentils, Chickpeas, Brown Rice, Quinoa, Organic Wheat) in src/scripts/seed.ts
-- [x] Add new products (Oats, Black Beans, Barley) with their details and image URLs to src/scripts/seed.ts
-- [x] Verify the updated seed.ts file for correctness
+## Steps to Complete
+- [x] Update :root variables to include a green-tinted background gradient
+- [x] Change body background to a subtle green gradient to reduce overall whiteness
+- [x] Add green accents to .card class for more color variety
+- [x] Add green accents to .modern-section class for enhanced visual appeal
+- [x] Test the changes by running the application to ensure visual improvements

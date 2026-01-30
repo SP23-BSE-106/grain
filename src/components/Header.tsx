@@ -29,39 +29,38 @@ const Header = () => {
     <header className="bg-beige shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-wheat-brown hover:text-olive-green transition-colors duration-200">
+          <Link href="/" className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-olive-green via-wheat-brown to-dark-green bg-clip-text text-transparent hover:from-dark-green hover:via-olive-green hover:to-wheat-brown transition-all duration-500 drop-shadow-lg hover:drop-shadow-xl transform hover:scale-105 animate-float">
             GrainyMart
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/shop" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
-              Shop
-            </Link>
             {user ? (
               <>
-                <span className="text-olive-green font-medium">Hello, {user.name}</span>
-                <Link href="/profile" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
+                <Link href="/shop" className="btn-secondary">
+                  Shop
+                </Link>
+                <Link href="/profile" className="btn-secondary">
                   Profile
                 </Link>
-                <Link href="/orders" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
+                <Link href="/orders" className="btn-secondary">
                   Orders
                 </Link>
                 {user.role === 'admin' && (
-                  <Link href="/admin" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
+                  <Link href="/admin" className="btn-secondary">
                     Admin
                   </Link>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium focus-ring"
+                  className="btn-secondary"
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium">
+                <Link href="/login" className="btn-secondary">
                   Login
                 </Link>
                 <Link href="/signup" className="btn-secondary">
@@ -93,26 +92,25 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-olive-green/20 animate-slide-in">
             <nav className="flex flex-col space-y-4 mt-4">
-              <Link
-                href="/shop"
-                className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Shop
-              </Link>
               {user ? (
                 <>
-                  <span className="text-olive-green font-medium">Hello, {user.name}</span>
+                  <Link
+                    href="/shop"
+                    className="btn-secondary w-fit"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Shop
+                  </Link>
                   <Link
                     href="/profile"
-                    className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium"
+                    className="btn-secondary w-fit"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Profile
                   </Link>
                   <Link
                     href="/orders"
-                    className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium"
+                    className="btn-secondary w-fit"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Orders
@@ -120,7 +118,7 @@ const Header = () => {
                   {user.role === 'admin' && (
                     <Link
                       href="/admin"
-                      className="text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium"
+                      className="btn-secondary w-fit"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Admin
@@ -131,7 +129,7 @@ const Header = () => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="text-left text-olive-green hover:text-wheat-brown transition-colors duration-200 font-medium focus-ring"
+                    className="btn-secondary w-fit text-left"
                   >
                     Logout
                   </button>

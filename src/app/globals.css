@@ -7,11 +7,12 @@ html {
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --card-bg: #ffffff;
+  --card-bg: rgba(255,255,255,0.95);
   --border-color: #e5e7eb;
   --text-secondary: #6b7280;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --body-bg: linear-gradient(to bottom, rgba(107,142,35,0.05), rgba(245,245,220,0.1), #ffffff);
 }
 
 
@@ -30,7 +31,7 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: var(--body-bg);
   color: var(--foreground);
   font-family: 'Inter', Arial, Helvetica, sans-serif;
   line-height: 1.6;
@@ -65,37 +66,67 @@ body {
   animation: bounce 2s infinite;
 }
 
-/* Utility Classes */
+/* Modern Utility Classes */
 .btn-primary {
-  @apply bg-olive-green text-white px-6 py-3 rounded-xl hover:bg-wheat-brown transition-all duration-300 font-medium shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-olive-green focus:ring-offset-2 transform hover:scale-105 active:scale-95;
+  @apply bg-gradient-to-r from-olive-green to-dark-green text-white px-8 py-4 rounded-2xl hover:from-dark-green hover:to-olive-green transition-all duration-500 font-semibold shadow-2xl hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-olive-green/50 focus:ring-offset-2 transform hover:scale-105 active:scale-95 relative overflow-hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
 }
 
 .btn-secondary {
-  @apply bg-wheat-brown text-olive-green px-6 py-3 rounded-xl hover:bg-beige transition-all duration-300 font-medium shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-wheat-brown focus:ring-offset-2 transform hover:scale-105 active:scale-95;
+  @apply bg-gradient-to-r from-wheat-brown to-beige text-olive-green px-8 py-4 rounded-2xl hover:from-beige hover:to-wheat-brown transition-all duration-500 font-semibold shadow-2xl hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-wheat-brown/50 focus:ring-offset-2 transform hover:scale-105 active:scale-95 relative overflow-hidden;
+}
+
+.btn-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(107,142,35,0.1), transparent);
+  transition: left 0.5s;
+}
+
+.btn-secondary:hover::before {
+  left: 100%;
 }
 
 .btn-outline {
-  @apply border-2 border-olive-green text-olive-green px-6 py-3 rounded-xl hover:bg-olive-green hover:text-white transition-all duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-olive-green focus:ring-offset-2 transform hover:scale-105 active:scale-95;
+  @apply border-3 border-olive-green text-olive-green px-8 py-4 rounded-2xl hover:bg-olive-green hover:text-white transition-all duration-500 font-semibold shadow-xl hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-olive-green/50 focus:ring-offset-2 transform hover:scale-105 active:scale-95 backdrop-blur-sm bg-white/50;
 }
 
 .btn-ghost {
-  @apply bg-transparent text-olive-green hover:bg-olive-green/10 px-6 py-3 rounded-xl transition-all duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-olive-green focus:ring-offset-2;
+  @apply bg-transparent text-olive-green hover:bg-olive-green/10 px-8 py-4 rounded-2xl transition-all duration-500 font-semibold focus:outline-none focus:ring-4 focus:ring-olive-green/50 focus:ring-offset-2 backdrop-blur-sm;
 }
 
 .card-hover {
-  @apply hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer;
+  @apply hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 cursor-pointer;
 }
 
 .card {
-  @apply bg-white dark:bg-slate-800 rounded-xl shadow-md border border-gray-100 dark:border-slate-700 p-6 transition-all duration-300;
+  @apply bg-gradient-to-br from-white/90 to-olive-green/5 dark:bg-slate-800/90 rounded-3xl shadow-xl border border-gray-200/50 dark:border-slate-700/50 p-8 transition-all duration-500 backdrop-blur-lg;
 }
 
 .input-field {
-  @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white text-gray-900 transition-all duration-300 placeholder-gray-500;
+  @apply w-full px-6 py-4 border-2 border-gray-300/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-olive-green/30 focus:border-olive-green/50 bg-white/80 text-gray-900 transition-all duration-500 placeholder-gray-500 backdrop-blur-sm;
 }
 
 .focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-olive-green focus:ring-offset-2;
+  @apply focus:outline-none focus:ring-4 focus:ring-olive-green/50 focus:ring-offset-2;
 }
 
 .line-clamp-2 {
@@ -106,11 +137,31 @@ body {
 }
 
 .glass-effect {
-  @apply bg-white/80 backdrop-blur-md border border-white/20;
+  @apply bg-white/70 backdrop-blur-xl border border-white/30 shadow-2xl;
 }
 
 .gradient-bg {
-  @apply bg-gradient-to-br from-beige via-wheat-brown/10 to-olive-green/5;
+  @apply bg-gradient-to-br from-olive-green/10 via-beige to-wheat-brown/20;
+}
+
+.modern-card {
+  @apply bg-gradient-to-br from-white via-white to-beige/30 rounded-3xl shadow-2xl border border-white/50 p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 backdrop-blur-lg;
+}
+
+.modern-section {
+  @apply py-24 bg-gradient-to-br from-olive-green/10 via-off-white to-beige/20 relative overflow-hidden;
+}
+
+.modern-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(107,142,35,0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(210,180,140,0.05) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 /* Responsive Typography */

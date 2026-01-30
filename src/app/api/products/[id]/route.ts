@@ -1,31 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import Product from '@/models/Product';
+import Review from '@/models/Review';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await connectToDatabase();
     const { id } = await params;
-    const product = await Product.findById(id).populate('reviews');
+
+    await connectToDatabase();
+    const product = await Product.findById(id);
     if (!product) {
-      // Return sample if not found
-      if (id === '1') {
-        return NextResponse.json({
-          _id: '1',
-          name: 'Organic Wheat',
-          category: 'Whole Grains',
-          price: 5.99,
-          description: 'High-quality organic wheat grains.',
-          image: '/next.svg',
-          rating: 4.5,
-          reviews: []
-        });
-      }
-      // Add for others
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
+
     return NextResponse.json(product);
-  } catch {
+  } catch (error) {
+    console.error('Error in GET /api/products/[id]:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

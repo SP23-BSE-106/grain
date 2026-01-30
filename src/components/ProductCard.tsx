@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/authStore';
 import { useCartStore } from '@/stores/cartStore';
 import { Star, Heart } from 'lucide-react';
 import { useState } from 'react';
@@ -18,11 +20,26 @@ interface Product {
 
 const ProductCard = ({ product }: { product: Product }) => {
   const { addItem } = useCartStore();
+  const { user } = useAuthStore();
+  const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
 
+  const handleProductClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      router.push('/login?redirect=/shop');
+    } else {
+      router.push(`/product/${product._id}`);
+    }
+  };
+
   const handleAddToCart = () => {
-    addItem(product);
-    // Add a brief animation or feedback here if desired
+    if (!user) {
+      router.push('/login?redirect=/shop');
+    } else {
+      addItem(product);
+      // Add a brief animation or feedback here if desired
+    }
   };
 
   const toggleWishlist = () => {
@@ -33,13 +50,13 @@ const ProductCard = ({ product }: { product: Product }) => {
   return (
     <div className="bg-white rounded-xl shadow-md p-4 card-hover animate-fade-in focus-ring">
       <div className="relative">
-        <Link href={`/product/${product._id}`}>
+        <button onClick={handleProductClick} className="w-full">
           <img
             src={product.image}
             alt={product.name}
             className="w-full h-48 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
           />
-        </Link>
+        </button>
         <button
           onClick={toggleWishlist}
           className="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition-colors duration-200"
@@ -51,11 +68,11 @@ const ProductCard = ({ product }: { product: Product }) => {
         </button>
       </div>
       <div className="mt-4">
-        <Link href={`/product/${product._id}`}>
+        <button onClick={handleProductClick} className="text-left w-full">
           <h3 className="text-lg font-semibold text-gray-800 hover:text-olive-green transition-colors duration-200 line-clamp-2">
             {product.name}
           </h3>
-        </Link>
+        </button>
         <p className="text-sm text-gray-600 mt-1">{product.category}</p>
         <div className="flex items-center mt-2">
           <div className="flex items-center">

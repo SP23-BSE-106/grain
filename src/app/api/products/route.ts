@@ -52,6 +52,22 @@ export async function GET(request: NextRequest) {
 
     let products = await productsQuery;
 
+    // Fix image URLs that are still using shorturl.at
+    const imageUpdates = {
+      'Brown Rice': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8QnJvd24lMjBSaWNlfGVufDB8fDB8fHww',
+      'Lentils': 'https://images.unsplash.com/photo-1552585960-0e1069ce7405?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGVudGlsc3xlbnwwfHwwfHx8MA%3D%3D',
+      'Quinoa': 'https://plus.unsplash.com/premium_photo-1705207702015-0c1f567a14df?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8UXVpbm9hfGVufDB8fDB8fHww',
+      'Chickpeas': 'https://images.unsplash.com/photo-1515548239417-3c3b713d10d4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Q2hpY2twZWFzfGVufDB8fDB8fHww',
+      'Oats': 'https://images.unsplash.com/photo-1499638673689-79a0b5115d87?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8T2F0c3xlbnwwfHwwfHx8MA%3D%3D'
+    };
+
+    products = products.map(product => {
+      if (product.image && product.image.includes('shorturl.at')) {
+        product.image = imageUpdates[product.name] || product.image;
+      }
+      return product;
+    });
+
     console.log('Found products:', products.length);
     return NextResponse.json(products);
   } catch (error) {
@@ -64,6 +80,26 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
     const body = await request.json();
+
+    // Check if this is an update images request
+    if (body.action === 'updateImages') {
+      const imageUpdates = {
+        'Brown Rice': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8QnJvd24lMjBSaWNlfGVufDB8fDB8fHww',
+        'Lentils': 'https://images.unsplash.com/photo-1552585960-0e1069ce7405?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGVudGlsc3xlbnwwfHwwfHx8MA%3D%3D',
+        'Quinoa': 'https://plus.unsplash.com/premium_photo-1705207702015-0c1f567a14df?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8UXVpbm9hfGVufDB8fDB8fHww',
+        'Chickpeas': 'https://images.unsplash.com/photo-1644432757699-bb5a01e8fb0e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Q2hpY2twZWFzfGVufDB8fDB8fHww',
+        'Oats': 'https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b2F0c3xlbnwwfHwwfHx8MA%3D%3D'
+      };
+
+      const results = [];
+      for (const [name, image] of Object.entries(imageUpdates)) {
+        const result = await Product.updateOne({ name }, { image });
+        results.push({ name, updated: result.modifiedCount > 0 });
+      }
+
+      return NextResponse.json({ message: 'Images updated', results });
+    }
+
     const { name, category, price, description, image, rating, stock } = body;
     if (!name || !category || !price || !description || !image || rating === undefined || stock === undefined) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });

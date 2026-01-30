@@ -32,6 +32,7 @@ const ProductDetail: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetch(`/api/products/${id}`)
@@ -43,7 +44,7 @@ const ProductDetail: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (product) {
+    if (product && product.category) {
       fetch(`/api/products?category=${encodeURIComponent(product.category)}&limit=5`)
         .then(res => res.json())
         .then(data => {
@@ -53,6 +54,9 @@ const ProductDetail: React.FC = () => {
           } else {
             setRelatedProducts([]);
           }
+        })
+        .catch(() => {
+          setRelatedProducts([]);
         });
     }
   }, [product]);
@@ -77,6 +81,25 @@ const ProductDetail: React.FC = () => {
 
   const images = [product.image, product.image]; // Placeholder for multiple images
 
+  const handleImageError = (index: number) => {
+    setImageErrors(prev => new Set(prev).add(index));
+  };
+
+  const getImageSrc = (originalSrc: string, index: number) => {
+    if (imageErrors.has(index)) {
+      // Fallback images based on product name
+      const fallbackImages: { [key: string]: string } = {
+        'Brown Rice': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8QnJvd24lMjBSaWNlfGVufDB8fDB8fHww',
+        'Lentils': 'https://images.unsplash.com/photo-1515942400420-2b98fed1a518?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TGVudGlsa3xlbnwwfHwwfHx8MA%3D%3D',
+        'Quinoa': 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8UXVpbm9hfGVufDB8fDB8fHww',
+        'Chickpeas': 'https://images.unsplash.com/photo-1515548239417-3c3b713d10d4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Q2hpY2twZWFzfGVufDB8fDB8fHww',
+        'Oats': 'https://images.unsplash.com/photo-1499638673689-79a0b5115d87?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8T2F0c3xlbnwwfHwwfHx8MA%3D%3D'
+      };
+      return fallbackImages[product.name] || '/next.svg';
+    }
+    return originalSrc;
+  };
+
   return (
     <div className="min-h-screen bg-beige">
       <div className="container mx-auto px-4 py-8">
@@ -90,11 +113,12 @@ const ProductDetail: React.FC = () => {
           <div className="space-y-4">
             <div className="bg-white rounded-lg shadow-md p-4">
               <Image
-                src={images[selectedImage] || '/next.svg'}
+                src={getImageSrc(images[selectedImage], selectedImage) || '/next.svg'}
                 alt={`Image of ${product.name}`}
                 width={600}
                 height={600}
                 className="w-full h-96 object-cover rounded-lg"
+                onError={() => handleImageError(selectedImage)}
               />
             </div>
             <div className="flex space-x-2">
@@ -316,6 +340,18 @@ const ProductDetail: React.FC = () => {
                       width={200}
                       height={192}
                       className="w-full h-48 object-cover rounded-lg mb-4"
+                      onError={(e) => {
+                        // Simple fallback for related products
+                        const fallbackImages: { [key: string]: string } = {
+                          'Brown Rice': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8QnJvd24lMjBSaWNlfGVufDB8fDB8fHww',
+                          'Lentils': 'https://images.unsplash.com/photo-1515942400420-2b98fed1a518?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TGVudGlsa3xlbnwwfHwwfHx8MA%3D%3D',
+                          'Quinoa': 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8UXVpbm9hfGVufDB8fDB8fHww',
+                          'Chickpeas': 'https://images.unsplash.com/photo-1515548239417-3c3b713d10d4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Q2hpY2twZWFzfGVufDB8fDB8fHww',
+                          'Oats': 'https://images.unsplash.com/photo-1499638673689-79a0b5115d87?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8T2F0c3xlbnwwfHwwfHx8MA%3D%3D'
+                        };
+                        const img = e.target as HTMLImageElement;
+                        img.src = fallbackImages[relatedProduct.name] || '/next.svg';
+                      }}
                     />
                     <h3 className="font-semibold mb-2">{relatedProduct.name}</h3>
                     <p className="text-olive-green font-medium">${relatedProduct.price.toFixed(2)}</p>
