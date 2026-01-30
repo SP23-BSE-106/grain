@@ -25,12 +25,20 @@ export async function POST(request: NextRequest) {
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
+    let domain: string | undefined = undefined;
+    if (process.env.VERCEL_URL) {
+      try {
+        domain = new URL(process.env.VERCEL_URL).hostname;
+      } catch (error) {
+        console.error('Invalid VERCEL_URL:', process.env.VERCEL_URL);
+      }
+    }
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax' as const,
       path: '/',
-      domain: process.env.VERCEL_URL ? new URL(process.env.VERCEL_URL).hostname : undefined,
+      domain,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
