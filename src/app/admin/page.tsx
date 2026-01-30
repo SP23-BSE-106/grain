@@ -127,8 +127,10 @@ const AdminDashboard = () => {
         router.push('/login');
       }
     };
-    checkAuth();
-  }, []);
+    if (isHydrated) {
+      checkAuth();
+    }
+  }, [isHydrated]);
 
   const handleCreateProduct = async () => {
     try {

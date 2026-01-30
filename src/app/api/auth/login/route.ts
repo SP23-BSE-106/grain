@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       domain,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
-    response.cookies.set('accessToken', accessToken, { ...cookieOptions, maxAge: 60 * 60 * 24 * 7 });
+    response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false, maxAge: 60 * 60 * 24 * 7 });
     console.log('Cookies set in response with domain:', domain, 'sameSite:', cookieOptions.sameSite);
     return response;
   } catch (error) {
