@@ -34,17 +34,24 @@ const Shop = () => {
   useEffect(() => {
     if (!isHydrated) return;
     if (!user) {
-      if (token) {
-        // Verify the token from the store
+      // Check for token in cookies first (middleware verified it)
+      const getCookie = (name: string) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(';').shift();
+      };
+      const cookieToken = getCookie('accessToken');
+      if (cookieToken) {
+        // Verify the token from cookies
         fetch('/api/verifyToken', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
+          body: JSON.stringify({ token: cookieToken }),
         })
           .then(res => res.json())
           .then(data => {
             if (data.valid) {
-              useAuthStore.getState().login(data.user, token);
+              useAuthStore.getState().login(data.user, cookieToken);
             } else {
               router.push('/login');
             }
@@ -54,7 +61,7 @@ const Shop = () => {
         router.push('/login');
       }
     }
-  }, [isHydrated, user, token, router]);
+  }, [isHydrated, user, router]);
 
   // Initialize state from URL parameters
   useEffect(() => {
