@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/authStore';
 import ProductCard from '@/components/ProductCard';
 import ProductSkeleton from '@/components/ProductSkeleton';
 import { Search, Filter, SortAsc, RefreshCw } from 'lucide-react';
@@ -15,6 +16,8 @@ interface Product {
 }
 
 const Shop = () => {
+  const { user, isHydrated } = useAuthStore();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,6 +30,13 @@ const Shop = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   const categories = ['Whole Grains', 'Pulses', 'Flours'];
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, isHydrated, router]);
 
   // Initialize state from URL parameters
   useEffect(() => {

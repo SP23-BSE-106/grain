@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
-    const domain = undefined;
+    const domain = isProduction ? request.nextUrl.host : undefined;
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
