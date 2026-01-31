@@ -40,18 +40,25 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
 
     const sameSiteValue = isProduction ? 'none' : 'lax';
-    const cookieOptions = {
+    const refreshCookieOptions = {
       httpOnly: true,
       secure: isProduction,
       sameSite: sameSiteValue as 'none' | 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     };
+    const accessCookieOptions = {
+      httpOnly: false,
+      secure: isProduction,
+      sameSite: sameSiteValue as 'none' | 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    };
 
-    response.cookies.set('refreshToken', refreshToken, cookieOptions);
-    response.cookies.set('accessToken', accessToken, cookieOptions);
+    response.cookies.set('refreshToken', refreshToken, refreshCookieOptions);
+    response.cookies.set('accessToken', accessToken, accessCookieOptions);
 
-    console.log('🔑 LOGIN_API: Cookies set in response - accessToken httpOnly:', cookieOptions.httpOnly);
+    console.log('🔑 LOGIN_API: Cookies set in response - accessToken httpOnly:', accessCookieOptions.httpOnly);
 
     return response;
   } catch (error) {
