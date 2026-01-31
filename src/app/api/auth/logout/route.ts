@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
   const cookieOptions = {
     expires: new Date(0),
     path: '/',
-    domain: isVercel ? '.vercel.app' : undefined,
   };
   const response = NextResponse.json({ message: 'Logged out successfully' });
   response.cookies.set('accessToken', '', cookieOptions);

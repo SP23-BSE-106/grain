@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
       sameSite: 'lax' as const,
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
-      domain: isVercel ? request.nextUrl.host : undefined,
     };
     response.cookies.set('refreshToken', refreshToken, { ...cookieOptions, httpOnly: true });
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
