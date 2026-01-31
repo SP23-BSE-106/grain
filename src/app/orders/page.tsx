@@ -23,18 +23,23 @@ interface Order {
 }
 
 const Orders = () => {
-  const { user } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Client-side authentication check - wait for hydration
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
+    if (isHydrated && !user) {
+      router.push('/login?redirect=/orders');
     }
-    fetchOrders();
-  }, [user, router]);
+  }, [isHydrated, user, router]);
+
+  useEffect(() => {
+    if (isHydrated && user) {
+      fetchOrders();
+    }
+  }, [isHydrated, user]);
 
   const fetchOrders = async () => {
     try {

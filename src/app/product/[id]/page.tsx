@@ -28,7 +28,7 @@ interface Product {
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
-  const { user } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,24 +37,12 @@ const ProductDetail: React.FC = () => {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
-  // Client-side authentication check
+  // Client-side authentication check - wait for hydration
   useEffect(() => {
-    if (!user) {
+    if (isHydrated && !user) {
       router.push('/login?redirect=' + encodeURIComponent(`/product/${id}`));
     }
-  }, [user, router, id]);
-
-  // Don't render if not authenticated
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-beige flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-green mx-auto mb-4"></div>
-          <p className="text-gray-600">Redirecting to login...</p>
-        </div>
-      </div>
-    );
-  }
+  }, [isHydrated, user, router, id]);
 
   useEffect(() => {
     fetch(`/api/products/${id}`)

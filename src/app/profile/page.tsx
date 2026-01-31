@@ -13,27 +13,26 @@ interface User {
 }
 
 const Profile = () => {
-  const { user, logout } = useAuthStore();
+  const { user, logout, isHydrated } = useAuthStore();
   const router = useRouter();
   const [profile, setProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '' });
   const [saving, setSaving] = useState(false);
-  const [storeLoaded, setStoreLoaded] = useState(false);
 
+  // Client-side authentication check - wait for hydration
   useEffect(() => {
-    setStoreLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (!storeLoaded) return;
-    if (!user) {
-      router.push('/login');
-      return;
+    if (isHydrated && !user) {
+      router.push('/login?redirect=/profile');
     }
-    fetchProfile();
-  }, [storeLoaded, user, router]);
+  }, [isHydrated, user, router]);
+
+  useEffect(() => {
+    if (isHydrated && user) {
+      fetchProfile();
+    }
+  }, [isHydrated, user]);
 
   const fetchProfile = async () => {
     try {

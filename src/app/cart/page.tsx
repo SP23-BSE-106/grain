@@ -24,12 +24,12 @@ const Cart = () => {
 
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  // Client-side authentication check
+  // Client-side authentication check - wait for hydration
   useEffect(() => {
-    if (!user) {
+    if (isHydrated && !user) {
       router.push('/login?redirect=/cart');
     }
-  }, [user, router]);
+  }, [isHydrated, user, router]);
 
   const handleCheckout = async () => {
     if (!isHydrated) {

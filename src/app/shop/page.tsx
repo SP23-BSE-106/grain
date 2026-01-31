@@ -16,7 +16,7 @@ interface Product {
 }
 
 const Shop = () => {
-  const { user } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
@@ -31,12 +31,12 @@ const Shop = () => {
 
   const categories = ['Whole Grains', 'Pulses', 'Flours'];
 
-  // Client-side authentication check
+  // Client-side authentication check - wait for hydration
   useEffect(() => {
-    if (!user) {
+    if (isHydrated && !user) {
       router.push('/login?redirect=/shop');
     }
-  }, [user, router]);
+  }, [isHydrated, user, router]);
 
   // Initialize state from URL parameters
   useEffect(() => {
