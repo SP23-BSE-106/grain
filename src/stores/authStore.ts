@@ -26,21 +26,4 @@ export const useAuthStore = create<AuthState>()(
   })
 );
 
-// Initialize auth state on client-side
-if (typeof window !== 'undefined') {
-  fetch('/api/auth/me', {
-    credentials: 'include',
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.user) {
-        useAuthStore.getState().login(data.user);
-      } else {
-        useAuthStore.getState().setHydrated();
-      }
-    })
-    .catch((error) => {
-      console.error('Failed to fetch user data:', error);
-      useAuthStore.getState().setHydrated();
-    });
-}
+

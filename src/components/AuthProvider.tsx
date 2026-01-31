@@ -49,7 +49,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     if (!isHydrated && typeof window !== 'undefined') {
-      checkAuth();
+      checkAuth().catch((error) => {
+        console.error('Auth check failed:', error);
+        setHydrated();
+      });
     }
   }, [isHydrated, user, pathname, router, setHydrated]);
 
