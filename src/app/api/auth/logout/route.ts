@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     path: '/',
     sameSite: sameSiteValue as 'none' | 'lax',
     secure: isProduction,
+    ...(isVercel && { domain: `.${request.nextUrl.host}` }),
   };
   const response = NextResponse.json({ message: 'Logged out successfully' });
   response.cookies.set('accessToken', '', cookieOptions);
