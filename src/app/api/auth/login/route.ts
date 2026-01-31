@@ -25,17 +25,15 @@ export async function POST(request: NextRequest) {
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
-    const domain = isProduction ? request.nextUrl.host : undefined;
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax' as const,
+      sameSite: isProduction ? 'none' as const : 'lax' as const,
       path: '/',
-      domain,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false, maxAge: 60 * 60 * 24 * 7 });
-    console.log('Cookies set in response with domain:', domain, 'sameSite:', cookieOptions.sameSite);
+    console.log('Cookies set in response with sameSite:', cookieOptions.sameSite);
     return response;
   } catch (error) {
     console.error('Login error:', error);
