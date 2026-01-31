@@ -17,40 +17,30 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>()(
-  persist(
-    (set, get) => ({
-      user: null,
-      isHydrated: false,
-      login: (user: User) => set({ user, isHydrated: true }),
-      logout: () => set({ user: null }),
-      setHydrated: () => set({ isHydrated: true }),
-    }),
-    {
-      name: 'auth-storage',
-      storage: createJSONStorage(() => localStorage),
-      onRehydrateStorage: () => (state) => {
-        if (state && typeof window !== 'undefined') {
-          // Fetch user data from the API endpoint with credentials
-          fetch('/api/auth/me', {
-            credentials: 'include',
-          })
-            .then((res) => {
-              if (!res.ok) throw new Error('Failed to fetch user');
-              return res.json();
-            })
-            .then((data) => {
-              if (data.user) {
-                state.login(data.user);
-              } else {
-                state.setHydrated();
-              }
-            })
-            .catch((error) => {
-              console.error('Failed to fetch user data:', error);
-              state.setHydrated();
-            });
-        }
-      },
-    }
-  )
+  (set, get) => ({
+    user: null,
+    isHydrated: false,
+    login: (user: User) => set({ user, isHydrated: true }),
+    logout: () => set({ user: null }),
+    setHydrated: () => set({ isHydrated: true }),
+  })
 );
+
+// Initialize auth state on client-side
+if (typeof window !== 'undefined') {
+  fetch('/api/auth/me', {
+    credentials: 'include',
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.user) {
+        useAuthStore.getState().login(data.user);
+      } else {
+        useAuthStore.getState().setHydrated();
+      }
+    })
+    .catch((error) => {
+      console.error('Failed to fetch user data:', error);
+      useAuthStore.getState().setHydrated();
+    });
+}
