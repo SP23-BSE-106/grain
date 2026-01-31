@@ -24,6 +24,19 @@ const OrderSchema: Schema = new Schema({
   }],
   total: { type: Number, required: true },
   status: { type: String, enum: ['pending', 'paid', 'shipped', 'delivered'], default: 'pending' },
+  billingInfo: {
+    fullName: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String, required: true },
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    postalCode: { type: String, required: true },
+    paymentMethod: { type: String, enum: ['cash_on_delivery', 'jazzcash', 'easypaisa', 'bank_transfer'], required: true },
+    jazzcashNumber: { type: String },
+    easypaisaNumber: { type: String },
+    bankAccountNumber: { type: String },
+    bankName: { type: String },
+  },
 }, {
   timestamps: true,
 });

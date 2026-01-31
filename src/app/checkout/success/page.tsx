@@ -71,7 +71,7 @@ const CheckoutSuccessContent = () => {
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-olive-green mb-4">Payment Successful!</h1>
+            <h1 className="text-3xl font-bold text-olive-green mb-4">Order Successful!</h1>
             <p className="text-gray-600 mb-6">
               Thank you for your purchase. Your order has been confirmed and is being processed.
             </p>

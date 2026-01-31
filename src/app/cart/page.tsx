@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useCartStore } from '@/stores/cartStore';
@@ -20,7 +20,6 @@ const Cart = () => {
   const { user, isHydrated } = useAuthStore();
   const { items, savedForLater, isLoading, removeItem, clearCart, saveForLater, moveToCart, saveCart } = useCartStore();
   const router = useRouter();
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
@@ -31,7 +30,7 @@ const Cart = () => {
     }
   }, [isHydrated, user, router]);
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (!isHydrated) {
       // Wait for hydration
       return;
@@ -41,27 +40,7 @@ const Cart = () => {
       return;
     }
 
-    setCheckoutLoading(true);
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ items }),
-      });
-
-      if (res.ok) {
-        const { url } = await res.json();
-        window.location.href = url; // Redirect to Stripe Checkout
-      } else {
-        const error = await res.json();
-        alert(error.error);
-      }
-    } catch (error) {
-      alert('Error creating checkout session');
-    }
-    setCheckoutLoading(false);
+    router.push('/checkout');
   };
 
   if (isLoading) {
@@ -144,10 +123,9 @@ const Cart = () => {
                 </button>
                 <button
                   onClick={handleCheckout}
-                  disabled={checkoutLoading}
-                  className="px-6 py-2 bg-olive-green text-white rounded hover:bg-wheat-brown transition disabled:opacity-50"
+                  className="px-6 py-2 bg-olive-green text-white rounded hover:bg-wheat-brown transition"
                 >
-                  {checkoutLoading ? 'Placing Order...' : 'Checkout'}
+                  Proceed to Checkout
                 </button>
               </div>
             </div>

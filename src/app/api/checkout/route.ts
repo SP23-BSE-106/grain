@@ -26,9 +26,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const { items } = await request.json();
+    const { items, billingInfo } = await request.json();
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
+    }
+    if (!billingInfo) {
+      return NextResponse.json({ error: 'Billing information is required' }, { status: 400 });
     }
 
     // Check stock and calculate total
@@ -62,7 +65,8 @@ export async function POST(request: NextRequest) {
       user: decoded.id,
       items: orderItems,
       total,
-      status: 'pending',
+      status: billingInfo.paymentMethod === 'cash_on_delivery' ? 'pending' : 'paid',
+      billingInfo,
     });
 
     await order.save();
