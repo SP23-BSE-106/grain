@@ -7,7 +7,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-function AuthProviderComponent({ children }: AuthProviderProps) {
+export default function AuthProvider({ children }: AuthProviderProps) {
   const { isHydrated } = useAuthStore();
 
   useEffect(() => {
@@ -72,5 +72,3 @@ function AuthProviderComponent({ children }: AuthProviderProps) {
 
   return <>{children}</>;
 }
-
-export default AuthProviderComponent;
