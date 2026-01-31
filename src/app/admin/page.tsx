@@ -56,10 +56,32 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!isHydrated) return;
-    if (!user) {
-      router.push('/login');
-    }
-  }, [isHydrated, user, router]);
+
+    // Check authentication directly
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.user && data.user.role === 'admin') {
+            console.log('Admin: User authenticated via API:', data.user.role);
+            fetchData();
+          } else {
+            console.log('Admin: User not admin or not authenticated');
+            router.push('/login');
+          }
+        } else {
+          console.log('Admin: Auth check failed, redirecting to login');
+          router.push('/login');
+        }
+      } catch (error) {
+        console.error('Admin: Auth check error:', error);
+        router.push('/login');
+      }
+    };
+
+    checkAuth();
+  }, [isHydrated, router]);
 
   const fetchData = async () => {
     const getCookie = (name: string) => {
@@ -95,42 +117,7 @@ const AdminDashboard = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const getCookie = (name: string) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(';').shift();
-      };
-      const token = getCookie('accessToken');
-      console.log('Admin: Token from cookie:', token ? 'present' : 'not present');
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-      try {
-        const res = await fetch('/api/verifyToken', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        });
-        const data = await res.json();
-        console.log('Admin: Verify response:', data);
-        if (!data.valid || data.user.role !== 'admin') {
-          router.push('/login');
-          return;
-        }
-        // Auth valid and role is admin, proceed
-        fetchData();
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        router.push('/login');
-      }
-    };
-    if (isHydrated) {
-      checkAuth();
-    }
-  }, [isHydrated]);
+
 
   const handleCreateProduct = async () => {
     try {
