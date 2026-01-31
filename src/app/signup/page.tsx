@@ -12,7 +12,12 @@ import Link from 'next/link';
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Must contain at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Must contain at least one special character'),
   confirmPassword: z.string(),
   role: z.enum(['user', 'admin']),
   secretCode: z.string().optional(),
@@ -50,6 +55,33 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
 
   const selectedRole = watch('role');
+  const password = watch('password') || '';
+
+  // Password Strength Calculation
+  const calculateStrength = (pass: string) => {
+    let score = 0;
+    if (pass.length >= 8) score++;
+    if (pass.match(/[A-Z]/)) score++;
+    if (pass.match(/[a-z]/)) score++;
+    if (pass.match(/[0-9]/)) score++;
+    if (pass.match(/[^A-Za-z0-9]/)) score++;
+    return score;
+  };
+
+  const strengthScore = calculateStrength(password);
+
+  const getStrengthColor = (score: number) => {
+    if (score <= 2) return 'bg-red-500';
+    if (score <= 4) return 'bg-yellow-500';
+    return 'bg-green-500';
+  };
+
+  const getStrengthText = (score: number) => {
+    if (score === 0) return '';
+    if (score <= 2) return 'Weak';
+    if (score <= 4) return 'Medium';
+    return 'Strong';
+  };
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -114,9 +146,31 @@ const Signup = () => {
                 {...register('password')}
                 type="password"
                 className="w-full px-4 py-3 bg-white/60 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all"
-                placeholder="••••••"
+                placeholder="••••••••"
               />
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+
+              {/* Password Strength Meter */}
+              {password && (
+                <div className="mt-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs text-gray-500">Strength: <span className={`font-medium ${strengthScore <= 2 ? 'text-red-500' : strengthScore <= 4 ? 'text-yellow-600' : 'text-green-600'}`}>{getStrengthText(strengthScore)}</span></span>
+                  </div>
+                  <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-300 ${getStrengthColor(strengthScore)}`}
+                      style={{ width: `${(strengthScore / 5) * 100}%` }}
+                    />
+                  </div>
+                  <ul className="text-xs text-gray-500 mt-2 space-y-1">
+                    <li className={password.length >= 8 ? 'text-green-600' : ''}>• 8+ characters</li>
+                    <li className={/[A-Z]/.test(password) ? 'text-green-600' : ''}>• Uppercase letter</li>
+                    <li className={/[a-z]/.test(password) ? 'text-green-600' : ''}>• Lowercase letter</li>
+                    <li className={/[0-9]/.test(password) ? 'text-green-600' : ''}>• Number</li>
+                    <li className={/[^A-Za-z0-9]/.test(password) ? 'text-green-600' : ''}>• Special character</li>
+                  </ul>
+                </div>
+              )}
             </div>
 
             <div>
@@ -125,7 +179,7 @@ const Signup = () => {
                 {...register('confirmPassword')}
                 type="password"
                 className="w-full px-4 py-3 bg-white/60 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all"
-                placeholder="••••••"
+                placeholder="••••••••"
               />
               {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
             </div>

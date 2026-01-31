@@ -12,6 +12,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
+    // Password Complexity Validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json({
+        error: 'Password must be at least 8 chars and contain uppercase, lowercase, number, and special char'
+      }, { status: 400 });
+    }
+
     // Verify admin secret code
     if (role === 'admin') {
       const ADMIN_SECRET = process.env.ADMIN_SECRET_CODE || 'secret123'; // Default for dev
