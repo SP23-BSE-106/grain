@@ -28,8 +28,9 @@ export async function POST(request: NextRequest) {
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'none' as const : 'lax' as const,
+      sameSite: 'lax' as const,
       path: '/',
+      domain,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false, maxAge: 60 * 60 * 24 * 7 });

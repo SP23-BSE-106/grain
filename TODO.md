@@ -7,10 +7,11 @@
 - [x] Fix console.log in login route to remove reference to removed domain variable
 
 ## Summary
-The issue was that cookies were not being set correctly on Vercel due to domain setting and sameSite policy. On Vercel, domain should not be set, and sameSite should be 'none' in production for cross-site compatibility.
+The issue was that cookies were not being set correctly on Vercel due to domain setting. For Vercel deployments on subdomains, domain should be set to '.vercel.app' to allow cookies across subdomains, and sameSite should be 'lax'.
 
 Changes made:
-- In `/api/auth/login/route.ts`: Removed domain setting, set sameSite to 'none' in production.
-- In `/api/auth/logout/route.ts`: Removed domain setting.
+- In `/api/auth/login/route.ts`: Set domain to '.vercel.app' if on vercel.app in production, sameSite to 'lax'.
+- In `/api/auth/signup/route.ts`: Set domain to '.vercel.app' if on vercel.app in production, sameSite to 'lax'.
+- In `/api/auth/logout/route.ts`: Set domain to '.vercel.app' if on vercel.app in production.
 
 This should resolve the redirect issue after login on Vercel.
