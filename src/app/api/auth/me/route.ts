@@ -16,21 +16,34 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    await connectToDatabase();
-    const user = await User.findById(decoded.id).select('name email role');
+    try {
+      await connectToDatabase();
+      const user = await User.findById(decoded.id).select('_id name email role');
 
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      if (!user) {
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        user: {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      // Fallback: return partial user data from token
+      return NextResponse.json({
+        user: {
+          id: decoded.id,
+          name: '',
+          email: '',
+          role: decoded.role,
+        },
+      });
     }
-
-    return NextResponse.json({
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
   } catch (error) {
     console.error('Error fetching user:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

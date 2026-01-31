@@ -41,9 +41,14 @@ export const useAuthStore = create<AuthState>()(
           
           const cookieToken = getCookie('accessToken');
           if (cookieToken && !state.user) {
-            // Fetch user data from the API endpoint
-            fetch('/api/auth/me')
-              .then((res) => res.json())
+            // Fetch user data from the API endpoint with credentials
+            fetch('/api/auth/me', {
+              credentials: 'include',
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch user');
+                return res.json();
+              })
               .then((data) => {
                 if (data.user) {
                   state.login(data.user, cookieToken);
