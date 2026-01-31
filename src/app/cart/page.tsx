@@ -17,7 +17,7 @@ interface CartItem {
 }
 
 const Cart = () => {
-  const { user } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const { items, savedForLater, isLoading, removeItem, clearCart, saveForLater, moveToCart, saveCart } = useCartStore();
   const router = useRouter();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
