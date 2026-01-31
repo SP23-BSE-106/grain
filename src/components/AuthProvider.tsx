@@ -20,8 +20,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Skip auth check on public routes
       const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
-      if (isProtectedRoute && !user) {
-        // Try to restore from API
+      if (isProtectedRoute) {
+        // Always verify auth on protected routes
         try {
           const response = await fetch('/api/auth/me', {
             credentials: 'include',
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             }
           }
         } catch (error) {
-          console.error('Failed to restore auth:', error);
+          console.error('Failed to verify auth:', error);
         }
 
         // No valid auth, redirect to login
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setHydrated();
       });
     }
-  }, [isHydrated, user, pathname, router, setHydrated]);
+  }, [isHydrated, pathname, router, setHydrated]);
 
   return <>{children}</>;
 }
