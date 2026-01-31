@@ -99,7 +99,7 @@ const Orders = () => {
     <div className="min-h-screen bg-beige">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-olive-green mb-8">My Orders</h1>
+          <h1 className="text-3xl font-bold text-olive-green mb-8 text-center">My Orders</h1>
 
           {orders.length === 0 ? (
             <div className="bg-white rounded-lg shadow-md p-8 text-center">
