@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import { verifyToken } from '@/lib/token';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   console.log('🔒 MIDDLEWARE: Processing request for path:', pathname);
@@ -26,7 +26,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    const decoded = verifyToken(token);
+    const decoded = await verifyToken(token);
     console.log('🔒 MIDDLEWARE: Token verification result:', !!decoded);
     if (decoded) {
       console.log('🔒 MIDDLEWARE: Decoded token:', { id: decoded.id, role: decoded.role });

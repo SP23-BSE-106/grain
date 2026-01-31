@@ -103,3 +103,16 @@ const cookieOptions = {
 - `sameSite: 'lax'` allows cookies to work with cross-site navigation
 - `httpOnly: false` for accessToken allows client-side access for auth checks
 - `httpOnly: true` for refreshToken keeps it secure server-side only
+
+### 5. **Edge Runtime Compatibility (Middleware)** ❌ → ✅
+**Problem:**
+- Middleware runs on Vercel's Edge Runtime, which doesn't support native Node.js modules used by `jsonwebtoken` (crypto, etc.) and potentially `bcryptjs`
+- This caused token verification to silently fail or crash in the middleware, redirecting valid users to login
+
+**Fix:**
+- Installed `jose` library (lightweight, Edge-compatible JWT library)
+- Created `src/lib/token.ts` for Edge-safe token verification using `jose`
+- Refactored `src/lib/auth.ts` to separate Node-only dependencies (bcrypt) from token verification
+- Updated `middleware.ts` and all API routes to use the new `async verifyToken` function
+
+**File:** `middleware.ts`, `src/lib/token.ts`, `src/lib/auth.ts`

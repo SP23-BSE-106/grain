@@ -15,17 +15,5 @@ export function generateToken(payload: object): string {
   return jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: '1h' });
 }
 
-export function verifyToken(token: string): any {
-  console.log('🔑 AUTH_LIB: verifyToken called with token:', !!token);
-  try {
-    const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
-    console.log('🔑 AUTH_LIB: Token verified successfully:', !!decoded);
-    if (decoded) {
-      console.log('🔑 AUTH_LIB: Decoded payload:', decoded);
-    }
-    return decoded;
-  } catch (error) {
-    console.log('🔑 AUTH_LIB: Token verification failed:', error);
-    return null;
-  }
-}
+// Re-export verifyToken for backward compatibility
+export { verifyToken } from './token';

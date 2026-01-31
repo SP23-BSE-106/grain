@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'No token provided' }, { status: 401 });
     }
 
-    const decoded = verifyToken(token);
+    const decoded = await verifyToken(token);
     console.log('🔑 AUTH_ME_API: Token verification result:', !!decoded);
     if (decoded) {
       console.log('🔑 AUTH_ME_API: Decoded token:', { id: decoded.id, role: decoded.role });

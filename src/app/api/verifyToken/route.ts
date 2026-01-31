@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 3: Verify the token using the verifyToken function
-    const decoded = verifyToken(token);
+    const decoded = await verifyToken(token);
     if (!decoded) {
       return NextResponse.json({ valid: false }, { status: 401 });
     }
