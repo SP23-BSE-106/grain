@@ -10,21 +10,22 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const pathname = usePathname();
-  const { isHydrated, user, setHydrated } = useAuthStore();
+  const { isHydrated } = useAuthStore();
 
-  console.log('🔐 AUTH_PROVIDER: Component render - pathname:', pathname, 'isHydrated:', isHydrated, 'user:', !!user);
+  console.log('🔐 AUTH_PROVIDER: Component render - pathname:', pathname, 'isHydrated:', isHydrated, 'user:', !!useAuthStore.getState().user);
 
   useEffect(() => {
-    console.log('🔐 AUTH_PROVIDER: useEffect triggered - isHydrated:', isHydrated, 'pathname:', pathname, 'user:', !!user);
+    console.log('🔐 AUTH_PROVIDER: useEffect triggered - isHydrated:', isHydrated, 'pathname:', pathname, 'user:', !!useAuthStore.getState().user);
 
     // Only populate user data if we have a token but no user in store
     // Authentication and redirects are handled by middleware
     const populateUser = async () => {
       console.log('🔐 AUTH_PROVIDER: populateUser called');
 
-      if (user) {
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser) {
         console.log('🔐 AUTH_PROVIDER: User already exists in store, setting hydrated');
-        setHydrated();
+        useAuthStore.setState({ isHydrated: true });
         return;
       }
 
@@ -73,19 +74,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       console.log('🔐 AUTH_PROVIDER: No user data available, setting hydrated');
       // No user data available, just set hydrated
-      setHydrated();
+      useAuthStore.setState({ isHydrated: true });
     };
 
     if (!isHydrated && typeof window !== 'undefined') {
       console.log('🔐 AUTH_PROVIDER: Running populateUser...');
       populateUser().catch((error) => {
         console.error('🔐 AUTH_PROVIDER: User population failed:', error);
-        setHydrated();
+        useAuthStore.setState({ isHydrated: true });
       });
     } else {
       console.log('🔐 AUTH_PROVIDER: Skipping populateUser - isHydrated:', isHydrated, 'window defined:', typeof window !== 'undefined');
     }
-  }, [isHydrated, setHydrated, user]);
+  }, [isHydrated]);
 
   return <>{children}</>;
 }
