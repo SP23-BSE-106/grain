@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const isProduction = process.env.NODE_ENV === 'production';
     const isVercel = request.nextUrl.host.includes('vercel.app');
     const response = NextResponse.json({ message: 'User created successfully' });
-    response.cookies.set('refreshToken', refreshToken, { httpOnly: true, secure: isProduction, sameSite: 'lax' as const, path: '/' });
+    response.cookies.set('refreshToken', refreshToken, { httpOnly: true, secure: isProduction, sameSite: (isProduction ? 'none' : 'lax') as const, path: '/' });
     return response;
   } catch (error) {
     console.error('Signup error:', error);

@@ -16,5 +16,3 @@ Changes made:
 - In `/api/auth/logout/route.ts`: Removed domain, set sameSite 'none' in production
 
 This should resolve the redirect issue after login on Vercel.
-
-This should resolve the redirect issue after login on Vercel.

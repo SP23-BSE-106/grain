@@ -27,12 +27,12 @@ export async function POST(request: NextRequest) {
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax' as const,
+      sameSite: (isProduction ? 'none' : 'lax') as const,
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     };
     response.cookies.set('refreshToken', refreshToken, { ...cookieOptions, httpOnly: true });
-    response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
+    response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: true });
     console.log('Cookies set in response');
     return response;
   } catch (error) {
