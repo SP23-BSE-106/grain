@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 
 export function middleware(request: NextRequest) {
-  console.log('Middleware: JWT_ACCESS_SECRET set:', !!process.env.JWT_ACCESS_SECRET);
   const { pathname } = request.nextUrl;
 
   // Define protected routes (require login)
@@ -17,7 +16,6 @@ export function middleware(request: NextRequest) {
 
   if (isProtected || isAdmin) {
     const token = request.cookies.get('accessToken')?.value;
-    console.log('Middleware: Token present:', !!token);
 
     if (!token) {
       // No token, redirect to login with redirect param
@@ -27,7 +25,6 @@ export function middleware(request: NextRequest) {
     }
 
     const decoded = verifyToken(token);
-    console.log('Middleware: Decoded valid:', !!decoded, decoded?.role);
     if (!decoded) {
       // Invalid token, redirect to login
       const loginUrl = new URL('/login', request.url);
@@ -36,10 +33,8 @@ export function middleware(request: NextRequest) {
     }
 
     if (isAdmin && decoded.role !== 'admin') {
-      // Not admin, redirect to login
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
+      // Not admin, redirect to home
+      return NextResponse.redirect(new URL('/', request.url));
     }
   }
 

@@ -16,12 +16,9 @@ export function generateToken(payload: object): string {
 }
 
 export function verifyToken(token: string): any {
-  console.log('verifyToken called with token:', token ? 'present' : 'null');
-  console.log('JWT_ACCESS_SECRET set:', !!process.env.JWT_ACCESS_SECRET);
   try {
     return jwt.verify(token, JWT_ACCESS_SECRET);
   } catch (error) {
-    console.log('JWT verify error:', (error as Error).message);
     return null;
   }
 }
