@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 
 const CheckoutSuccessContent = () => {
-  const { user, token, isHydrated } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const { clearCart } = useCartStore();
   const router = useRouter();
   const searchParams = useSearchParams();

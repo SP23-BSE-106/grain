@@ -23,7 +23,7 @@ interface Order {
 }
 
 const Orders = () => {
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,18 +37,8 @@ const Orders = () => {
   }, [user, router]);
 
   const fetchOrders = async () => {
-    if (!token) {
-      console.error('No token available');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const res = await fetch('/api/orders/user', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const res = await fetch('/api/orders/user');
 
       if (res.ok) {
         const data = await res.json();

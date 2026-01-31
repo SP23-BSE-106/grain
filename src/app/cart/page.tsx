@@ -17,7 +17,7 @@ interface CartItem {
 }
 
 const Cart = () => {
-  const { user, token, isHydrated } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const { items, savedForLater, isLoading, removeItem, clearCart, saveForLater, moveToCart, saveCart } = useCartStore();
   const router = useRouter();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -39,8 +39,7 @@ const Cart = () => {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ items }),
       });
@@ -128,8 +127,8 @@ const Cart = () => {
                 <button
                   onClick={async () => {
                     clearCart();
-                    if (user && token) {
-                      await saveCart(user.id, token);
+                    if (user) {
+                      await saveCart(user.id);
                     }
                   }}
                   className="px-6 py-2 border border-gray-300 rounded hover:bg-gray-50 transition text-gray-900"

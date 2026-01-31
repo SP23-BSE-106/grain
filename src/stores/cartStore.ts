@@ -23,7 +23,7 @@ interface CartState {
   saveForLater: (item: CartItem) => void;
   moveToCart: (item: CartItem) => void;
   loadCart: (userId: string, token: string) => Promise<void>;
-  saveCart: (userId: string, token: string) => Promise<void>;
+  saveCart: (userId: string) => Promise<void>;
 }
 
 export const useCartStore = create<CartState>()(
@@ -80,14 +80,13 @@ export const useCartStore = create<CartState>()(
           set({ isLoading: false });
         }
       },
-      saveCart: async (userId: string, token: string) => {
+      saveCart: async (userId: string) => {
         try {
           const { items } = get();
           await fetch('/api/cart', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({ items })
           });

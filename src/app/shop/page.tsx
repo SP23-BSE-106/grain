@@ -16,7 +16,7 @@ interface Product {
 }
 
 const Shop = () => {
-  const { user, isHydrated, token } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
@@ -46,7 +46,7 @@ const Shop = () => {
         try {
           const payload = cookieToken.split('.')[1];
           const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-          useAuthStore.getState().login(decoded, cookieToken);
+          useAuthStore.getState().login(decoded);
         } catch (e) {
           router.push('/login');
         }

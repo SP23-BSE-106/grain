@@ -13,7 +13,7 @@ interface User {
 }
 
 const Profile = () => {
-  const { user, token, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
   const [profile, setProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,19 +28,17 @@ const Profile = () => {
 
   useEffect(() => {
     if (!storeLoaded) return;
-    if (!user || !token) {
+    if (!user) {
       router.push('/login');
       return;
     }
     fetchProfile();
-  }, [storeLoaded, token, user, router]);
+  }, [storeLoaded, user, router]);
 
   const fetchProfile = async () => {
     try {
       const res = await fetch('/api/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
 
       if (res.ok) {
@@ -67,8 +65,8 @@ const Profile = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 

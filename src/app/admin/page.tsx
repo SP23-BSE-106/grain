@@ -32,7 +32,7 @@ interface User {
 }
 
 const AdminDashboard = () => {
-  const { user, token, isHydrated } = useAuthStore();
+  const { user, isHydrated } = useAuthStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState<Product[]>([]);
