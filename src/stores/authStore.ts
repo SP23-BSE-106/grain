@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         if (state && typeof window !== 'undefined') {
-          // Check for token in cookies and decode to set user
+          // Check for token in cookies and fetch user data from API
           const getCookie = (name: string) => {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
@@ -41,14 +41,20 @@ export const useAuthStore = create<AuthState>()(
           
           const cookieToken = getCookie('accessToken');
           if (cookieToken && !state.user) {
-            try {
-              const payload = cookieToken.split('.')[1];
-              const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-              state.login(decoded, cookieToken);
-            } catch (e) {
-              console.error('Failed to decode token from cookie:', e);
-              state.setHydrated();
-            }
+            // Fetch user data from the API endpoint
+            fetch('/api/auth/me')
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.user) {
+                  state.login(data.user, cookieToken);
+                } else {
+                  state.setHydrated();
+                }
+              })
+              .catch((error) => {
+                console.error('Failed to fetch user data:', error);
+                state.setHydrated();
+              });
           } else {
             state.setHydrated();
           }

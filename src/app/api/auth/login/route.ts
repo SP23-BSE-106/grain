@@ -22,13 +22,11 @@ export async function POST(request: NextRequest) {
     const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '7d' });
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
-    const isVercel = request.nextUrl.host.includes('vercel.app');
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
-    const sameSiteValue = isProduction ? 'none' : 'lax';
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: sameSiteValue as 'none' | 'lax',
+      sameSite: isProduction ? 'none' as const : 'lax' as const,
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     };
