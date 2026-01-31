@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -6,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -13,9 +15,18 @@ const schema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
   role: z.enum(['user', 'admin']),
+  secretCode: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
+}).refine((data) => {
+  if (data.role === 'admin' && !data.secretCode) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Secret code is required for admin accounts",
+  path: ["secretCode"],
 });
 
 type FormData = {
@@ -24,15 +35,22 @@ type FormData = {
   password: string;
   confirmPassword: string;
   role: 'user' | 'admin';
+  secretCode?: string;
 };
 
 const Signup = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      role: 'user', // Default to user
+    }
   });
   const { login } = useAuthStore();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  const selectedRole = watch('role');
+
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
@@ -53,80 +71,107 @@ const Signup = () => {
     }
     setLoading(false);
   };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-beige via-wheat-brown/10 to-olive-green/5 px-4 py-8">
-      <div className="bg-white/95 backdrop-blur-sm p-8 sm:p-10 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100/50">
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-gradient-to-br from-olive-green to-dark-green rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-olive-green mb-3">Join GrainyMart</h2>
-          <p className="text-gray-600 text-lg">Create your account to get started</p>
+    <div className="min-h-screen flex items-center justify-center bg-beige-bg relative overflow-hidden py-12 px-4">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-olive-green/20 rounded-full blur-3xl transform -translate-x-1/3 -translate-y-1/3 animate-float" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-wheat-gold/20 rounded-full blur-3xl transform translate-x-1/3 translate-y-1/3 animate-float" style={{ animationDelay: '1.5s' }} />
+
+      <div className="glass-panel w-full max-w-lg p-8 md:p-10 rounded-3xl relative z-10 mx-auto">
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-block text-4xl mb-4 animate-bounce">🌾</Link>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 font-display">Join GrainyMart</h2>
+          <p className="text-gray-500">Create your account to start your healthy journey</p>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
             <input
               {...register('name')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
-              placeholder="Enter your full name"
+              className="w-full px-4 py-3 bg-white/60 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all"
+              placeholder="John Doe"
             />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
             <input
               {...register('email')}
               type="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
-              placeholder="Enter your email"
+              className="w-full px-4 py-3 bg-white/60 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all"
+              placeholder="name@example.com"
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-            <input
-              {...register('password')}
-              type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
-              placeholder="Create a password"
-            />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <input
+                {...register('password')}
+                type="password"
+                className="w-full px-4 py-3 bg-white/60 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all"
+                placeholder="••••••"
+              />
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+              <input
+                {...register('confirmPassword')}
+                type="password"
+                className="w-full px-4 py-3 bg-white/60 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all"
+                placeholder="••••••"
+              />
+              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+            </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-            <input
-              {...register('confirmPassword')}
-              type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
-              placeholder="Confirm your password"
-            />
-            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-            <select
-              {...register('role')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 hover:border-olive-green/50"
-            >
-              <option value="">Select a role</option>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Role</label>
+            <div className="relative">
+              <select
+                {...register('role')}
+                className="w-full px-4 py-3 bg-white/60 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all appearance-none"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
             {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
           </div>
+
+          {selectedRole === 'admin' && (
+            <div className="animate-fade-up bg-olive-green/5 p-4 rounded-xl border border-olive-green/10">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Admin Secret Code</label>
+              <input
+                {...register('secretCode')}
+                type="password"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all"
+                placeholder="Enter admin secret code"
+              />
+              {errors.secretCode && <p className="text-red-500 text-sm mt-1">{errors.secretCode.message}</p>}
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-olive-green to-dark-green text-white py-3 rounded-lg hover:from-dark-green hover:to-olive-green transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+            className="btn-primary w-full py-3.5 rounded-xl shadow-lg shadow-olive-green/20 mt-4"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">Already have an account? <a href="/login" className="text-olive-green hover:text-wheat-brown font-medium transition-colors duration-200">Sign in</a></p>
+
+        <div className="mt-8 text-center text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link href="/login" className="text-olive-green font-semibold hover:text-dark-text transition-colors">
+            Sign in
+          </Link>
         </div>
       </div>
     </div>

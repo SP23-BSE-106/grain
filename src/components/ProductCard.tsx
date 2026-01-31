@@ -1,11 +1,9 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useCartStore } from '@/stores/cartStore';
-import { Star, Heart } from 'lucide-react';
+import { Star, Heart, ShoppingCart, Plus } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -23,14 +21,17 @@ const ProductCard = ({ product }: { product: Product }) => {
   const { user } = useAuthStore();
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleProductClick = (e: React.MouseEvent) => {
     e.preventDefault();
     router.push(`/product/${product._id}`);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigating to product page
     if (!user) {
+      toast.error('Please login to continue');
       router.push('/login?redirect=/shop');
       return;
     }
@@ -38,56 +39,72 @@ const ProductCard = ({ product }: { product: Product }) => {
     toast.success('Added to cart!');
   };
 
-  const toggleWishlist = () => {
+  const toggleWishlist = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsWishlisted(!isWishlisted);
     toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 card-hover animate-fade-in focus-ring">
-      <div className="relative">
-        <button onClick={handleProductClick} className="w-full">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-48 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
-          />
-        </button>
+    <div
+      className="group relative bg-white rounded-2xl p-4 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Image Container */}
+      <div className="relative aspect-square overflow-hidden rounded-xl bg-gray-50 mb-4 cursor-pointer" onClick={handleProductClick}>
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+
+        {/* Wishlist Button */}
         <button
           onClick={toggleWishlist}
-          className="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition-colors duration-200"
-          aria-label="Add to wishlist"
+          className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:scale-110 transition-all duration-200 z-10"
         >
           <Heart
             className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-400'}`}
           />
         </button>
-      </div>
-      <div className="mt-4">
-        <button onClick={handleProductClick} className="text-left w-full">
-          <h3 className="text-lg font-semibold text-gray-800 hover:text-olive-green transition-colors duration-200 line-clamp-2">
-            {product.name}
-          </h3>
-        </button>
-        <p className="text-sm text-gray-600 mt-1">{product.category}</p>
-        <div className="flex items-center mt-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-              />
-            ))}
-          </div>
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{product.rating}/5</span>
+
+        {/* Quick Add Overlay */}
+        <div className={`absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/50 to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+          <button
+            onClick={handleAddToCart}
+            className="w-full bg-white text-olive-green py-3 rounded-xl font-semibold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center gap-2 hover:bg-olive-green hover:text-white"
+          >
+            <Plus className="w-5 h-5" />
+            Quick Add
+          </button>
         </div>
-        <p className="text-xl font-bold text-olive-green mt-2">${product.price.toFixed(2)}</p>
-        <button
-          onClick={handleAddToCart}
-          className="mt-3 w-full btn-primary focus-ring"
-        >
-          Add to Cart
-        </button>
+      </div>
+
+      {/* Content */}
+      <div onClick={handleProductClick} className="cursor-pointer">
+        <div className="flex justify-between items-start mb-2">
+          <div>
+            <p className="text-sm text-olive-green font-medium mb-1">{product.category}</p>
+            <h3 className="font-bold text-gray-800 text-lg leading-tight group-hover:text-olive-green transition-colors line-clamp-1">
+              {product.name}
+            </h3>
+          </div>
+          <div className="flex items-center bg-wheat-light/30 px-2 py-1 rounded-lg">
+            <Star className="w-3.5 h-3.5 text-wheat-gold fill-current" />
+            <span className="ml-1 text-sm font-semibold text-gray-700">{product.rating}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between mt-3">
+          <span className="text-xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+          <button
+            onClick={handleAddToCart}
+            className="md:hidden p-2 bg-olive-green text-white rounded-lg"
+          >
+            <ShoppingCart className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );

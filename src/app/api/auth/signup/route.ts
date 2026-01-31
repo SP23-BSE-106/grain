@@ -7,9 +7,17 @@ import User from '@/models/User';
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
-    const { name, email, password, role } = await request.json();
+    const { name, email, password, role, secretCode } = await request.json();
     if (!name || !email || !password) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+    }
+
+    // Verify admin secret code
+    if (role === 'admin') {
+      const ADMIN_SECRET = process.env.ADMIN_SECRET_CODE || 'secret123'; // Default for dev
+      if (secretCode !== ADMIN_SECRET) {
+        return NextResponse.json({ error: 'Invalid admin secret code' }, { status: 403 });
+      }
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {

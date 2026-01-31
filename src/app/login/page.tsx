@@ -20,6 +20,9 @@ type FormData = z.infer<typeof schema>;
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      role: 'user',
+    },
   });
   const { login } = useAuthStore();
   const router = useRouter();
@@ -84,7 +87,7 @@ const LoginForm = () => {
               {...register('role')}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent transition-all duration-200 bg-white text-gray-900"
             >
-              <option value="">Select a role</option>
+
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>

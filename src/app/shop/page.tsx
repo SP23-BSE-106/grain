@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import ProductCard from '@/components/ProductCard';
 import ProductSkeleton from '@/components/ProductSkeleton';
-import { Search, Filter, SortAsc, RefreshCw } from 'lucide-react';
+import { Search, Filter, SortAsc, RefreshCw, X, ChevronDown, SlidersHorizontal } from 'lucide-react';
 
 interface Product {
   _id: string;
@@ -31,20 +31,16 @@ const Shop = () => {
 
   const categories = ['Whole Grains', 'Pulses', 'Flours'];
 
-  // Client-side authentication check - wait for hydration
   useEffect(() => {
     if (isHydrated && !user) {
       router.push('/login?redirect=/shop');
     }
   }, [isHydrated, user, router]);
 
-  // Initialize state from URL parameters
   useEffect(() => {
     const category = searchParams.get('category');
     setSelectedCategory(category || '');
   }, [searchParams]);
-
-
 
   useEffect(() => {
     const fetchProducts = () => {
@@ -59,7 +55,7 @@ const Shop = () => {
       fetch(`/api/products?${params.toString()}`)
         .then(res => res.json())
         .then(data => {
-          setProducts(data);
+          setProducts(Array.isArray(data) ? data : []);
           setLoading(false);
         })
         .catch(() => setLoading(false));
@@ -77,162 +73,166 @@ const Shop = () => {
     setSortBy('');
   };
 
-  if (loading) return (
-    <div className="min-h-screen bg-beige">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center text-olive-green mb-8">Shop Our Products</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <ProductSkeleton key={index} />
-          ))}
+  return (
+    <div className="min-h-screen bg-beige-bg pb-20 pt-[73px]">
+      {/* Header */}
+      <div className="bg-olive-green text-white py-12 md:py-16 relative overflow-hidden mb-8">
+        <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(0,0,0,0.05)_25%,transparent_25%,transparent_50%,rgba(0,0,0,0.05)_50%,rgba(0,0,0,0.05)_75%,transparent_75%,transparent)] bg-[length:24px_24px] opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+        <div className="container-custom relative z-10 text-center animate-fade-up">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 font-display">Shop Collection</h1>
+          <p className="text-white/90 text-lg max-w-2xl mx-auto font-light">
+            Discover our premium selection of organic grains, sourced for quality and nutrition.
+          </p>
         </div>
       </div>
-    </div>
-  );
 
-  return (
-    <div className="min-h-screen bg-beige">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center text-olive-green mb-8">Shop Our Products</h1>
-
-        {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="container-custom relative z-20">
+        {/* Search & Filter Bar */}
+        <div className="glass-panel p-4 md:p-6 mb-8 animate-fade-up" style={{ animationDelay: '0.1s' }}>
           <div className="flex flex-col md:flex-row gap-4 items-center">
-            {/* Search Bar */}
-            <div className="relative flex-1 flex">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            {/* Search */}
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search for grains, pulses..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 pl-10 pr-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
+                onKeyDown={(e) => e.key === 'Enter' && setActiveSearchTerm(searchTerm)}
+                className="w-full pl-12 pr-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 focus:border-olive-green transition-all placeholder-gray-500"
               />
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 w-full md:w-auto">
               <button
                 onClick={() => setActiveSearchTerm(searchTerm)}
-                className="px-4 py-3 bg-olive-green text-white rounded-r-lg hover:bg-wheat-brown transition"
+                className="btn-primary py-3 px-8 whitespace-nowrap flex-1 md:flex-none justify-center"
               >
                 Search
               </button>
-            </div>
 
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2">
-              <SortAsc className="text-gray-400 w-5 h-5" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white text-gray-900"
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all flex-1 md:flex-none ${showFilters
+                    ? 'bg-olive-green text-white shadow-lg shadow-olive-green/20'
+                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                  }`}
               >
-                <option value="">Sort by</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
-                <option value="rating">Rating</option>
-              </select>
+                <SlidersHorizontal className="w-5 h-5" />
+                <span className="md:inline">Filters</span>
+              </button>
             </div>
-
-            {/* Refresh Button */}
-            <button
-              onClick={() => window.location.reload()}
-              className="flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            >
-              <RefreshCw className="w-5 h-5" />
-              Refresh
-            </button>
-
-            {/* Filter Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-3 bg-olive-green text-white rounded-lg hover:bg-wheat-brown transition"
-            >
-              <Filter className="w-5 h-5" />
-              Filters
-            </button>
           </div>
 
-          {/* Advanced Filters */}
-          {showFilters && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Category Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+          {/* Expanded Filters */}
+          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showFilters ? 'max-h-[500px] opacity-100 mt-6 pt-6 border-t border-gray-200/50' : 'max-h-0 opacity-0'}`}>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {/* Category */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+                <div className="relative">
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
+                    className="w-full appearance-none pl-4 pr-10 py-3 bg-white/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 cursor-pointer hover:border-olive-green/30 transition-colors"
                   >
                     <option value="">All Categories</option>
-                    {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
+                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
-                </div>
-
-                {/* Min Price */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Min Price</label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white text-gray-900"
-                  />
-                </div>
-
-                {/* Max Price */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Max Price</label>
-                  <input
-                    type="number"
-                    placeholder="100"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-green focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
-                  />
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 pointer-events-none" />
                 </div>
               </div>
 
-              <div className="mt-4 flex justify-end">
-                <button
-                  onClick={clearFilters}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition"
-                >
-                  Clear Filters
-                </button>
+              {/* Price Range */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-bold text-gray-700 mb-2">Price Range</label>
+                <div className="flex gap-4 items-center">
+                  <div className="relative flex-1">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">$</span>
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="w-full pl-8 pr-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20"
+                    />
+                  </div>
+                  <span className="text-gray-400 font-medium">-</span>
+                  <div className="relative flex-1">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">$</span>
+                    <input
+                      type="number"
+                      placeholder="Max"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                      className="w-full pl-8 pr-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sort */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Sort By</label>
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full appearance-none pl-4 pr-10 py-3 bg-white/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-green/20 cursor-pointer hover:border-olive-green/30 transition-colors"
+                  >
+                    <option value="">Featured</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="rating">Top Rated</option>
+                  </select>
+                  <SortAsc className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 pointer-events-none" />
+                </div>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-gray-600">
-            {products.length} product{products.length !== 1 ? 's' : ''} found
-            {selectedCategory && (
-              <span className="ml-2 text-olive-green font-medium">
-                in {selectedCategory}
+            <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200/50">
+              <span className="text-sm text-gray-500 font-medium">
+                Showing {products.length} results
               </span>
-            )}
-          </p>
+              <button
+                onClick={clearFilters}
+                className="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <X className="w-4 h-4" /> Clear Filters
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Products Grid */}
-        {products.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No products found matching your criteria.</p>
+        {/* Product Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductSkeleton key={i} />
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-24 glass-panel rounded-3xl animate-fade-in">
+            <div className="w-24 h-24 bg-olive-green/5 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="w-10 h-10 text-olive-green/50" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">No grains found</h3>
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">We couldn't find matches for your current filters. Try adjusting your search, category, or price range.</p>
             <button
               onClick={clearFilters}
-              className="mt-4 px-6 py-2 bg-olive-green text-white rounded-lg hover:bg-wheat-brown transition"
+              className="btn-secondary"
             >
-              Clear Filters
+              Clear All Filters
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map(product => (
-              <ProductCard key={product._id} product={product} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-stagger-fade">
+            {products.map((product) => (
+              <div key={product._id} className="h-full">
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         )}
@@ -243,7 +243,7 @@ const Shop = () => {
 
 function ShopPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-beige-bg" />}>
       <Shop />
     </Suspense>
   );
