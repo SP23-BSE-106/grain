@@ -24,12 +24,14 @@ export async function POST(request: NextRequest) {
     const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '7d' });
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
+    const isVercel = request.nextUrl.host.includes('vercel.app');
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax' as const,
       path: '/',
+      domain: isVercel ? '.vercel.app' : undefined,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
     response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false, maxAge: 60 * 60 * 24 * 7 });
