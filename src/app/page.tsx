@@ -44,20 +44,12 @@ const Home = () => {
   };
 
   const handleCategoryClick = (category: string) => {
-    if (!user) {
-      router.push('/login?redirect=/shop');
-    } else {
-      setSelectedCategory(category);
-      fetchProducts(category);
-    }
+    setSelectedCategory(category);
+    fetchProducts(category);
   };
 
   const handleShopAllClick = () => {
-    if (!user) {
-      router.push('/login?redirect=/shop');
-    } else {
-      router.push('/shop');
-    }
+    router.push('/shop');
   };
 
   useEffect(() => {

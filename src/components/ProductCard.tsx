@@ -26,20 +26,12 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   const handleProductClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!user) {
-      router.push('/login?redirect=/shop');
-    } else {
-      router.push(`/product/${product._id}`);
-    }
+    router.push(`/product/${product._id}`);
   };
 
   const handleAddToCart = () => {
-    if (!user) {
-      router.push('/login?redirect=/shop');
-    } else {
-      addItem(product);
-      // Add a brief animation or feedback here if desired
-    }
+    addItem(product);
+    // Add a brief animation or feedback here if desired
   };
 
   const toggleWishlist = () => {

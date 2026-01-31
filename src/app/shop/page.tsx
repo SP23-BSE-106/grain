@@ -31,30 +31,7 @@ const Shop = () => {
 
   const categories = ['Whole Grains', 'Pulses', 'Flours'];
 
-  useEffect(() => {
-    if (!isHydrated) return;
-    if (!user) {
-      // Check for token in cookies first (middleware verified it)
-      const getCookie = (name: string) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(';').shift();
-      };
-      const cookieToken = getCookie('accessToken');
-      if (cookieToken) {
-        // Decode the token to get the user (since middleware already verified it)
-        try {
-          const payload = cookieToken.split('.')[1];
-          const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-          useAuthStore.getState().login(decoded);
-        } catch (e) {
-          router.push('/login');
-        }
-      } else {
-        router.push('/login');
-      }
-    }
-  }, [isHydrated, user, router]);
+  // Authentication is now handled by middleware, no need for client-side checks
 
   // Initialize state from URL parameters
   useEffect(() => {

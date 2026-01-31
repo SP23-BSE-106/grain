@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
     };
     response.cookies.set('refreshToken', refreshToken, cookieOptions);
-    response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
+    response.cookies.set('accessToken', accessToken, cookieOptions);
     console.log('Cookies set in response');
     return response;
   } catch (error) {
