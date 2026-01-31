@@ -30,8 +30,12 @@ const ProductCard = ({ product }: { product: Product }) => {
   };
 
   const handleAddToCart = () => {
+    if (!user) {
+      router.push('/login?redirect=/shop');
+      return;
+    }
     addItem(product);
-    // Add a brief animation or feedback here if desired
+    toast.success('Added to cart!');
   };
 
   const toggleWishlist = () => {

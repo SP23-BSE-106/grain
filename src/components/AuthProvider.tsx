@@ -1,21 +1,17 @@
 'use client';
 
 import { useEffect, ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const pathname = usePathname();
+function AuthProviderComponent({ children }: AuthProviderProps) {
   const { isHydrated } = useAuthStore();
 
-  console.log('🔐 AUTH_PROVIDER: Component render - pathname:', pathname, 'isHydrated:', isHydrated, 'user:', !!useAuthStore.getState().user);
-
   useEffect(() => {
-    console.log('🔐 AUTH_PROVIDER: useEffect triggered - isHydrated:', isHydrated, 'pathname:', pathname, 'user:', !!useAuthStore.getState().user);
+    console.log('🔐 AUTH_PROVIDER: useEffect triggered - isHydrated:', isHydrated, 'user:', !!useAuthStore.getState().user);
 
     // Only populate user data if we have a token but no user in store
     // Authentication and redirects are handled by middleware
@@ -76,3 +72,5 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return <>{children}</>;
 }
+
+export { AuthProviderComponent as AuthProvider };

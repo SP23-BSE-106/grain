@@ -17,12 +17,19 @@ interface CartItem {
 }
 
 const Cart = () => {
-  const { user, isHydrated } = useAuthStore();
+  const { user } = useAuthStore();
   const { items, savedForLater, isLoading, removeItem, clearCart, saveForLater, moveToCart, saveCart } = useCartStore();
   const router = useRouter();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+  // Client-side authentication check
+  useEffect(() => {
+    if (!user) {
+      router.push('/login?redirect=/cart');
+    }
+  }, [user, router]);
 
   const handleCheckout = async () => {
     if (!isHydrated) {

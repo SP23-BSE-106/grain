@@ -1,9 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, Truck, Shield, RefreshCw, Heart, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { useAuthStore } from '@/stores/authStore';
 
 interface Review {
   _id: string;
@@ -27,12 +28,33 @@ interface Product {
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
+  const { user } = useAuthStore();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+
+  // Client-side authentication check
+  useEffect(() => {
+    if (!user) {
+      router.push('/login?redirect=' + encodeURIComponent(`/product/${id}`));
+    }
+  }, [user, router, id]);
+
+  // Don't render if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-beige flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-green mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to login...</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetch(`/api/products/${id}`)

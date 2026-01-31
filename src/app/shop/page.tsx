@@ -16,7 +16,7 @@ interface Product {
 }
 
 const Shop = () => {
-  const { user, isHydrated } = useAuthStore();
+  const { user } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
@@ -31,7 +31,12 @@ const Shop = () => {
 
   const categories = ['Whole Grains', 'Pulses', 'Flours'];
 
-  // Authentication is now handled by middleware, no need for client-side checks
+  // Client-side authentication check
+  useEffect(() => {
+    if (!user) {
+      router.push('/login?redirect=/shop');
+    }
+  }, [user, router]);
 
   // Initialize state from URL parameters
   useEffect(() => {
