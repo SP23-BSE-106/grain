@@ -25,8 +25,9 @@ export async function POST(request: NextRequest) {
     const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
     const isProduction = process.env.NODE_ENV === 'production';
+    const isVercel = request.nextUrl.host.includes('vercel.app');
     const response = NextResponse.json({ message: 'User created successfully' });
-    response.cookies.set('refreshToken', refreshToken, { httpOnly: true, secure: isProduction, sameSite: 'lax' as const, path: '/' });
+    response.cookies.set('refreshToken', refreshToken, { httpOnly: true, secure: isProduction, sameSite: 'lax' as const, path: '/', domain: isVercel ? request.nextUrl.host : undefined });
     return response;
   } catch (error) {
     console.error('Signup error:', error);
