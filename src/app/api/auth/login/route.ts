@@ -31,10 +31,9 @@ export async function POST(request: NextRequest) {
       sameSite: sameSiteValue as 'none' | 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
-      ...(isVercel && { domain: `.${request.nextUrl.host}` }),
     };
-    response.cookies.set('refreshToken', refreshToken, { ...cookieOptions, httpOnly: true });
-    response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: true });
+    response.cookies.set('refreshToken', refreshToken, cookieOptions);
+    response.cookies.set('accessToken', accessToken, { ...cookieOptions, httpOnly: false });
     console.log('Cookies set in response');
     return response;
   } catch (error) {

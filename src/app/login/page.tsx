@@ -36,7 +36,7 @@ const LoginForm = () => {
       });
       const result = await res.json();
       if (res.ok) {
-        login(result.user, result.accessToken);
+        login(result.user);
         toast.success('Login successful!');
         router.push(returnUrl);
       } else {

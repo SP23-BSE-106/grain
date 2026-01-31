@@ -10,9 +10,8 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isHydrated: boolean;
-  login: (user: User, token: string) => void;
+  login: (user: User) => void;
   logout: () => void;
   setHydrated: () => void;
 }
@@ -21,10 +20,9 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
       isHydrated: false,
-      login: (user, token) => set({ user, token, isHydrated: true }),
-      logout: () => set({ user: null, token: null }),
+      login: (user: User) => set({ user, isHydrated: true }),
+      logout: () => set({ user: null }),
       setHydrated: () => set({ isHydrated: true }),
     }),
     {
@@ -32,37 +30,25 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         if (state && typeof window !== 'undefined') {
-          // Check for token in cookies and fetch user data from API
-          const getCookie = (name: string) => {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop()?.split(';').shift();
-          };
-          
-          const cookieToken = getCookie('accessToken');
-          if (cookieToken && !state.user) {
-            // Fetch user data from the API endpoint with credentials
-            fetch('/api/auth/me', {
-              credentials: 'include',
+          // Fetch user data from the API endpoint with credentials
+          fetch('/api/auth/me', {
+            credentials: 'include',
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error('Failed to fetch user');
+              return res.json();
             })
-              .then((res) => {
-                if (!res.ok) throw new Error('Failed to fetch user');
-                return res.json();
-              })
-              .then((data) => {
-                if (data.user) {
-                  state.login(data.user, cookieToken);
-                } else {
-                  state.setHydrated();
-                }
-              })
-              .catch((error) => {
-                console.error('Failed to fetch user data:', error);
+            .then((data) => {
+              if (data.user) {
+                state.login(data.user);
+              } else {
                 state.setHydrated();
-              });
-          } else {
-            state.setHydrated();
-          }
+              }
+            })
+            .catch((error) => {
+              console.error('Failed to fetch user data:', error);
+              state.setHydrated();
+            });
         }
       },
     }
