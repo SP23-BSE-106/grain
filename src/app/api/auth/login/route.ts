@@ -39,18 +39,21 @@ export async function POST(request: NextRequest) {
     const isVercel = request.nextUrl.host.includes('vercel.app');
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
 
-    const sameSiteValue = isProduction ? 'none' : 'lax';
+    // Adjust cookie settings for Vercel
+    const sameSiteValue = isVercel ? 'lax' : (isProduction ? 'none' : 'lax');
+    const secureValue = isProduction;
+
     const refreshCookieOptions = {
       httpOnly: true,
-      secure: isProduction,
+      secure: secureValue,
       sameSite: sameSiteValue as 'none' | 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     };
     const accessCookieOptions = {
       httpOnly: false,
-      secure: isProduction,
-      sameSite: sameSiteValue as 'none' | 'lax',
+      secure: secureValue,
+      sameSite: sameSiteValue as 'lax', // Always 'lax' for non-httpOnly cookies
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     };
