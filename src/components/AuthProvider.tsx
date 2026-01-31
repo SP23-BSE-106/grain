@@ -73,4 +73,4 @@ function AuthProviderComponent({ children }: AuthProviderProps) {
   return <>{children}</>;
 }
 
-export { AuthProviderComponent as AuthProvider };
+export default AuthProviderComponent;

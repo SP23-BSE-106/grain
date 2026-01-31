@@ -6,19 +6,15 @@ export function middleware(request: NextRequest) {
 
   console.log('🔒 MIDDLEWARE: Processing request for path:', pathname);
 
-  // Define protected routes (require login)
-  const protectedRoutes: string[] = ['/shop', '/product', '/cart', '/orders', '/profile', '/checkout'];
-
-  // Define admin-only routes
+  // Define admin-only routes (only protect admin routes with middleware)
   const adminRoutes: string[] = ['/admin'];
 
-  // Check if the current path is protected
-  const isProtected = protectedRoutes.some(route => pathname.startsWith(route));
+  // Check if the current path is admin-only
   const isAdmin = adminRoutes.some(route => pathname.startsWith(route));
 
-  console.log('🔒 MIDDLEWARE: isProtected:', isProtected, 'isAdmin:', isAdmin);
+  console.log('🔒 MIDDLEWARE: isAdmin:', isAdmin);
 
-  if (isProtected || isAdmin) {
+  if (isAdmin) {
     const token = request.cookies.get('accessToken')?.value;
     console.log('🔒 MIDDLEWARE: Token present:', !!token);
 
@@ -44,7 +40,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    if (isAdmin && decoded.role !== 'admin') {
+    if (decoded.role !== 'admin') {
       // Not admin, redirect to home
       console.log('🔒 MIDDLEWARE: Non-admin trying to access admin route, redirecting to home');
       return NextResponse.redirect(new URL('/', request.url));
@@ -57,5 +53,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/shop', '/product/:path*', '/cart', '/orders/:path*', '/profile', '/checkout/:path*', '/admin/:path*'],
+  matcher: ['/admin/:path*'],
 };

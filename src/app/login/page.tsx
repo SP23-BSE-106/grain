@@ -38,7 +38,10 @@ const LoginForm = () => {
       if (res.ok) {
         login(result.user);
         toast.success('Login successful!');
-        router.push(returnUrl);
+        // Small delay to ensure auth state is updated before redirect
+        setTimeout(() => {
+          router.push(returnUrl);
+        }, 100);
       } else {
         toast.error(result.error);
       }
