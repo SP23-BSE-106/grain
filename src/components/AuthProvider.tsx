@@ -85,7 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } else {
       console.log('🔐 AUTH_PROVIDER: Skipping populateUser - isHydrated:', isHydrated, 'window defined:', typeof window !== 'undefined');
     }
-  }, [isHydrated, pathname, setHydrated, user]);
+  }, [isHydrated, setHydrated, user]);
 
   return <>{children}</>;
 }
