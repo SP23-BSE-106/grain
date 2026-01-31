@@ -29,47 +29,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return;
       }
 
-      // Check for token in cookies
-      const getCookie = (name: string) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(';').shift();
-      };
+      console.log('🔐 AUTH_PROVIDER: Calling /api/auth/me to check authentication...');
+      // Try to get user data from API (cookies are sent automatically with credentials: 'include')
+      try {
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include',
+        });
+        console.log('🔐 AUTH_PROVIDER: /api/auth/me response status:', response.status);
 
-      const token = getCookie('accessToken');
-      console.log('🔐 AUTH_PROVIDER: Token from cookies:', !!token);
+        if (response.ok) {
+          const data = await response.json();
+          console.log('🔐 AUTH_PROVIDER: /api/auth/me response data:', data);
 
-      if (token) {
-        console.log('🔐 AUTH_PROVIDER: Token found, calling /api/auth/me...');
-        // Try to get user data from API
-        try {
-          const response = await fetch('/api/auth/me', {
-            credentials: 'include',
-          });
-          console.log('🔐 AUTH_PROVIDER: /api/auth/me response status:', response.status);
-
-          if (response.ok) {
-            const data = await response.json();
-            console.log('🔐 AUTH_PROVIDER: /api/auth/me response data:', data);
-
-            if (data.user) {
-              console.log('🔐 AUTH_PROVIDER: Setting user in store:', data.user);
-              useAuthStore.setState({
-                user: data.user,
-                isHydrated: true,
-              });
-              return;
-            } else {
-              console.log('🔐 AUTH_PROVIDER: No user data in response');
-            }
+          if (data.user) {
+            console.log('🔐 AUTH_PROVIDER: Setting user in store:', data.user);
+            useAuthStore.setState({
+              user: data.user,
+              isHydrated: true,
+            });
+            return;
           } else {
-            console.log('🔐 AUTH_PROVIDER: /api/auth/me failed with status:', response.status);
+            console.log('🔐 AUTH_PROVIDER: No user data in response');
           }
-        } catch (error) {
-          console.error('🔐 AUTH_PROVIDER: Failed to fetch user data:', error);
+        } else {
+          console.log('🔐 AUTH_PROVIDER: /api/auth/me failed with status:', response.status);
         }
-      } else {
-        console.log('🔐 AUTH_PROVIDER: No token found in cookies');
+      } catch (error) {
+        console.error('🔐 AUTH_PROVIDER: Failed to fetch user data:', error);
       }
 
       console.log('🔐 AUTH_PROVIDER: No user data available, setting hydrated');
