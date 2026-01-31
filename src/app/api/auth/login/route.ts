@@ -24,10 +24,11 @@ export async function POST(request: NextRequest) {
     const isProduction = process.env.NODE_ENV === 'production';
     const isVercel = request.nextUrl.host.includes('vercel.app');
     const response = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, accessToken });
+    const sameSiteValue = isProduction ? 'none' : 'lax';
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: (isProduction ? 'none' : 'lax') as const,
+      sameSite: sameSiteValue as 'none' | 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     };
